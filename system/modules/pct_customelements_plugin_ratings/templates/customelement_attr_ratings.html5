@@ -51,7 +51,7 @@ jQuery(document).ready(function()
 		{
 		   url: document.location,
 		   data: {attr_id:elem.data('attr_id'), value:elem.rateit('value'), rateit:1, item_id:<?php echo $this->activeRecord->id; ?>},
-		   type: 'POST',
+		   type: 'GET',
 			success: function(data)
 			{
 				if(jQuery('#<?php echo $this->selector; ?> .thankyou').length < 1)

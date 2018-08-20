@@ -35,16 +35,17 @@ class Ratings
 	 */
 	public function prepareRenderingCallback($strField,$varValue,$objTemplate,$objAttribute)
 	{
-		if($objAttribute->get('type') != 'rateit' && !$objAttribute->get('allowRatings'))
+		if( $objAttribute->get('type') != 'rateit' || ($objAttribute->get('type') == 'rateit' && !$objAttribute->get('allowRatings')) )
 		{
 			return '';
 		}
-		
+				
 		$intPid = $objAttribute->getOrigin()->get('pid');
 		$strSource = $objAttribute->getOrigin()->get('table').'_'.$objAttribute->get('id');
 		$strTable = $objAttribute->getOrigin()->get('table');
+		$intRating = 0;
 		
-		// new rating via comments
+		// add new rating via comments
 		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
 		{
 			// Adjust the comments headline level
@@ -58,8 +59,14 @@ class Ratings
 			
 			$objComments = new \Contao\Comments();
 			
-			// Notify the system administrator
-			$arrNotifies = array($GLOBALS['TL_ADMIN_EMAIL']);
+			// Notifies
+			$arrNotifies = array();
+			
+			// Notify admin
+			if($objAttribute->get('com_notify') == 'notify_admin')
+			{
+				$arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
+			}
 			
 			// Notify a different person
 			if(strlen($objAttribute->get('com_notify')) > 0 && $objAttribute->get('com_notify') != 'notify_admin')
@@ -78,22 +85,57 @@ class Ratings
 			$objComments->addCommentsToTemplate($objTemplate, $objConfig, $strSource, $intPid, $arrNotifies);
 		}
 		
-		// new rating via ajax
-		if( \Input::post('attr_id') == $objAttribute->get('id') && \Environment::get('isAjaxRequest') )
+		// add new rating via ajax
+		if( \Input::get('attr_id') == $objAttribute->get('id') && (boolean)\Environment::get('isAjaxRequest') === true)
 		{
-			$time = time();
-			$rating = \Input::post('value');
-				
-			$this->addNewRating(\Input::post('value'),$strSource,$intPid,$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1));
+			$intRating = $this->addNewRating(\Input::get('value'),$objAttribute->getOrigin()->get('table'),$objAttribute->getOrigin()->get('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1));
 		}
 		
-		
+		// send notification
+		if($intRating > 0 && $objAttribute->get('ratings_notify') != '')
+		{
+			$objRating = \PCT\CustomElements\Models\RatingsModel::findByPk($intRating);
+			
+			// Prepare the notification mail
+			$objEmail = new \Email();
+			$objEmail->from = $GLOBALS['TL_ADMIN_EMAIL'];
+			$objEmail->fromName = $GLOBALS['TL_ADMIN_NAME'];
+			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Idna::decode(\Environment::get('host')));
+			$objEmail->text = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_message'],'', $objRating->rating, $objRating->source, $objRating->pid);
+									  
+			// Notifies
+			$arrNotifies = array();
+			
+			// Notify admin
+			if($objAttribute->get('ratings_notify') == 'notify_admin')
+			{
+				$arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
+			}
+			
+			// Notify a different person
+			if(strlen($objAttribute->get('ratings_notify')) > 0 && $objAttribute->get('ratings_notify') != 'notify_admin')
+			{
+				$arrNotifies = array($objAttribute->get('com_notify'));
+			}
+			
+			$objEmail->sendTo(array_unique($arrNotifies));
+		}
 		
 		// return empty to bypass the hook return value
 		return '';
 	}
 	
 	
+	/**
+	 * Add a new rating record
+	 * @param mixed		Value of the rating
+	 * @param string	Source
+	 * @param integer	Parent id related to the source
+	 * @param integer	Id of the rating attribute
+	 * @param boolean	Published setting
+	 * @param integer	Id of the comment related to the rating
+	 * @return integer	Id of the new rating record
+	 */
 	protected function addNewRating($varValue,$strSource,$intPid,$intAttribute,$blnPublished=false,$intComment=0)
 	{
 		$time = time();
@@ -110,10 +152,26 @@ class Ratings
 			'published' => $blnPublished
 		);
 		
-		// calc counter
+		// determine counter
+		$objCounter = \Database::getInstance()->prepare("SELECT * FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? ORDER BY counter DESC")->limit(1)->execute($strSource,$intPid,$intAttribute);
+		$arrSet['counter'] = $objCounter->counter + 1;
 		
+		// @var object
 		$objModel = new \PCT\CustomElements\Models\RatingsModel();
+		// save new rating
 		$objModel->setRow($arrSet)->save();
+		
+		// HOOK: add custom logic
+		if (isset($GLOBALS['CUSTOMELEMENTS_HOOKS']['addRating']) && is_array($GLOBALS['CUSTOMELEMENTS_HOOKS']['addRating']))
+		{
+			foreach ($GLOBALS['CUSTOMELEMENTS_HOOKS']['addRating'] as $callback)
+			{
+				$this->import($callback[0]);
+				$this->{$callback[0]}->{$callback[1]}($objModel->id, $arrSet, $this);
+			}
+		}
+		
+		return $objModel->id;
 	}
 	
 	
@@ -130,13 +188,45 @@ class Ratings
 			return;
 		}
 		
+		// @var object
 		$objAttribute = \PCT\CustomElements\Core\AttributeFactory::findById( \Input::post('attr_id') );
 		
-		if($objAttribute->get('type') != 'rateit' && !$objAttribute->get('allowRatings'))
+		if( $objAttribute->get('type') != 'rateit' || ($objAttribute->get('type') == 'rateit' && !$objAttribute->get('allowRatings')) )
 		{
 			return '';
 		}
 		
-		$this->addNewRating(\Input::post('value'),\Input::post('source'),\Input::post('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1), $intComment);
+		// add new rating
+		$intRating = $this->addNewRating(\Input::post('value'),\Input::post('source'),\Input::post('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1), $intComment);
+		
+		// send notification
+		if($intRating > 0 && $objAttribute->get('ratings_notify') != '')
+		{
+			$objRating = \PCT\CustomElements\Models\RatingsModel::findByPk($intRating);
+			
+			// Prepare the notification mail
+			$objEmail = new \Email();
+			$objEmail->from = $GLOBALS['TL_ADMIN_EMAIL'];
+			$objEmail->fromName = $GLOBALS['TL_ADMIN_NAME'];
+			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Idna::decode(\Environment::get('host')));
+			$objEmail->text = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_message'],$arrSet['name'], $objRating->rating, $objRating->source, $objRating->pid);
+									  
+			// Notifies
+			$arrNotifies = array();
+			
+			// Notify admin
+			if($objAttribute->get('ratings_notify') == 'notify_admin')
+			{
+				$arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
+			}
+			
+			// Notify a different person
+			if(strlen($objAttribute->get('ratings_notify')) > 0 && $objAttribute->get('ratings_notify') != 'notify_admin')
+			{
+				$arrNotifies = array($objAttribute->get('com_notify'));
+			}
+			
+			$objEmail->sendTo(array_unique($arrNotifies));
+		}
 	}
 }

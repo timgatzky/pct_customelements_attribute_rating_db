@@ -83,7 +83,7 @@ $objDcaHelper->addFields(array
 		'default'                 => 'notify_admin',
 		'exclude'                 => true,
 		'inputType'               => 'select',
-		'options'                 => array('notify_admin', 'notify_author', 'notify_both'),
+		'options'                 => array('notify_admin'),
 		'reference'               => &$GLOBALS['TL_LANG']['tl_pct_customelement_attribute'],
 		'eval'					  => array('includeBlankOption'=>true,'tl_class'=>''),
 		'sql'                     => "varchar(16) NOT NULL default ''"
@@ -132,7 +132,7 @@ $objDcaHelper->addFields(array
 		'default'                 => 'notify_admin',
 		'exclude'                 => true,
 		'inputType'               => 'select',
-		'options'                 => array('notify_admin', 'notify_author', 'notify_both'),
+		'options'                 => array('notify_admin'),
 		'reference'               => &$GLOBALS['TL_LANG']['tl_pct_customelement_attribute'],
 		'eval'					  => array('includeBlankOption'=>true,'tl_class'=>''),
 		'sql'                     => "varchar(16) NOT NULL default ''"

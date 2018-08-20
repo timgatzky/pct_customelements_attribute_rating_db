@@ -1,6 +1,4 @@
 
-
-
 <!-- indexer::stop -->
 <div class="form">
   <?php if ($this->requireLogin): ?>

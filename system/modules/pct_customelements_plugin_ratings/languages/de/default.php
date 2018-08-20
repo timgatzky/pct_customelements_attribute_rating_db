@@ -18,3 +18,17 @@
  */
 $GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['PLUGINS']['ratings'][0] = 'Bewertungs Plugin';
 $GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['PLUGINS']['ratings'][1] = 'Dieses Plugin erweitert das Basis-"Bewertungs"-Attribute (Bestandteil des CustomCatalog Paket), um die Speicherung und Auswertung abgegebener Bewertungen. Das Plugin stellt zusätzliche Filter für die Filterung nach Bewertungen und Sortierungen im Frontend bereit, sowie eine Übersicht im Backend.<br>Optional kann die Kommentar-Funktion je Bewertungs-Attribut aktiviert werden.';
+
+/**
+ * Texts
+ */
+$GLOBALS['TL_LANG']['MSC']['ratings_subject'] = 'Neue Bewertung auf %s';
+$GLOBALS['TL_LANG']['MSC']['ratings_message'] = '
+Eine neue Bewertung wurde hinterlassen.
+
+Von: %s
+Bewertung: %s
+Ziel: %s
+Eintrag: %s
+
+Wenn Sie Bewertungen moderieren, müssen Sie sich im Backend anmelden und die Bewertung veröffentlichen.';

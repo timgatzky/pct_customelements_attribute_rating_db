@@ -68,6 +68,9 @@ if($objDcaHelper->getActiveRecord()->type == $strType && in_array('ratings',\PCT
 		\Message::reset();
 		// Show template info
 		\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_attribute'], 'customelement_attr_ratings'));
+		
+		// hide the internal counter field
+		unset($GLOBALS['TL_DCA'][$objDcaHelper->getTable()]['fields']['rateit_counter']);		
 	}
 }
 

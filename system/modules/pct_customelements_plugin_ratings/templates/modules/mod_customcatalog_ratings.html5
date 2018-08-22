@@ -1,0 +1,12 @@
+
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+	
+	<?php if($this->empty): ?>
+		<p class="empty"><?= $this->empty ?></p>
+	<?php else: ?>
+	<?= $this->ratings; ?>
+	<?php endif; ?>
+
+<?php $this->endblock(); ?>

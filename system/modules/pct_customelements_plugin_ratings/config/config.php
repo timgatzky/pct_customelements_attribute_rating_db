@@ -35,6 +35,13 @@ if($blnInstallTool == false && count(\Session::getInstance()->getData()) > 0)
 	}
 }
 
+
+/**
+ * Globals
+ */
+$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlPaginationParameter']				= 'page_r';
+
+
 /**
  * Register the plugin
  */
@@ -53,6 +60,12 @@ if($blnInitialize)
 			'icon' 			=> PCT_CUSTOMELEMENTS_RATINGS_PATH.'/assets/img/icon.png',
 		)
 	));
+	
+	
+	/**
+	 * Front end modules
+	 */
+	$GLOBALS['FE_MOD']['pct_customcatalog_node']['customcatalogratings'] = 'PCT\CustomElements\Plugins\Ratings\Frontend\ModuleReader';
 	
 	
 	/**

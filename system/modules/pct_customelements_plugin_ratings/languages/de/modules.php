@@ -13,5 +13,8 @@
  * permanent text corrections which are update-safe. 
  */
 
+
 $GLOBALS['TL_LANG']['MOD']['pct_customelements_ratings'][0] = 'Bewertungen';
 $GLOBALS['TL_LANG']['MOD']['pct_customelements_ratings'][1] = 'Bewertungs-Tool für PCT CustomElements und CustomCatalog';
+$GLOBALS['TL_LANG']['FMD']['customcatalogratings'][0] = 'CustomCatalog-Bewertungen-Leser';
+$GLOBALS['TL_LANG']['FMD']['customcatalogratings'][1] = 'Bewertungs-Tool für PCT CustomCatalog Leser-Seiten';

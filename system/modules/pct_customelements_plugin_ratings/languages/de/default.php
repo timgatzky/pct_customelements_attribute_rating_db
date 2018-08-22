@@ -32,3 +32,10 @@ Ziel: %s
 Eintrag: %s
 
 Wenn Sie Bewertungen moderieren, müssen Sie sich im Backend anmelden und die Bewertung veröffentlichen.';
+$GLOBALS['TL_LANG']['MSC']['ratings_emptyList'] = 'Keine Bewertungen vorhanden';
+$GLOBALS['TL_LANG']['MSC']['ratings_helpful_label'] = 'Nützlich';
+$GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_label'] = 'Nicht nützlich';
+$GLOBALS['TL_LANG']['MSC']['ratings_helpful'] = '%s Personen fanden diese Information hilfreich';
+$GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] = '%s Person fand diese Information hilfreich';
+$GLOBALS['TL_LANG']['MSC']['ratings_not_helpful'] = '%s Personen fanden diese Information nicht hilfreich';
+$GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_single'] = '%s Person fand diese Information nicht hilfreich';

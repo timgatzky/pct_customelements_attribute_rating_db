@@ -29,6 +29,14 @@ $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['published'][0]			= 'Veröff
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['published'][1]			= 'Bewertung ist veröffentlicht / unveröffentlicht';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['rating'][0]			= 'Wertung';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['rating'][1]			= 'Der Bewertungswert';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['helpful'][0]			= 'Hilfreich';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['helpful'][1]			= 'Bewertung ist hilfreich oder nicht.';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attr_id'][0]			= 'Attribut';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attr_id'][1]			= 'Das verknüpfte Bewertungs-Attribut.';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['comment'][0]			= 'Kommentar';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['comment'][1]			= 'Das verknüpfte Kommentar.';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['member'][0]			= 'Mitglied';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['member'][1]			= 'Die ID des Mitglieds, das die Bewertung abgegeben hat.';
 
 
 /**
@@ -36,8 +44,8 @@ $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['rating'][1]			= 'Der Bewert
  */
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['comment'][0]			= 'Kommentar bearbeiten';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['comment'][1]			= 'Kommentar ID %s bearbeiten';
-$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attribute'][0]		= 'Bewertungs-Attribut bearbeiten';
-$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attribute'][1]		= 'Bewertungs-Attribut ID %s bearbeiten';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attribute'][0]			= 'Bewertungs-Attribut bearbeiten';
+$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attribute'][1]			= 'Das Bewertungs-Attribut bearbeiten';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['show'][0]				= 'Informationen zu Bewertung ID %s';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['show'][1]				= 'Informationen zu Bewertung ID %s anzeigen';
 $GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['toggle'][0]			= 'Bewertung veröffentlichen / unveröffentlichen';

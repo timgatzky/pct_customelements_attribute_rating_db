@@ -1,0 +1,29 @@
+
+
+<div class="rating_default block">
+	<div class="rating value_<?= $this->rating; ?>"><?= $this->rating; ?></div>
+	<div class="info">
+		<p><span class="author">Von: <?= $this->author ?></span><span class="time"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time></span></p>
+		<?php if($this->helpful): ?>
+		<p><span class="helpful"><?= $this->helpful; ?></span></p>
+		<?php endif; ?>
+		<?php if($this->not_helpful): ?>
+		<p><span class="not_helpful"><?= $this->not_helpful; ?></span></p>
+		<?php endif; ?>
+	</div>
+	<?php if($this->allowComments): ?>
+	<div class="comment">
+	<?= implode('',$this->comments); ?>
+	</div>
+	<?php endif; ?>
+	
+	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
+		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
+		<input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN; ?>">
+		<div class="button_container">
+			<button name="helpful" class="button helpful" value="1"><?= $this->helpful_label; ?></button>
+			<button name="not_helpful" class="button helpful" value="1"><?= $this->not_helpful_label; ?></button>
+		</div>
+	</form>
+
+</div>

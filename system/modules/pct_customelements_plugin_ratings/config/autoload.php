@@ -32,8 +32,10 @@ ClassLoader::addClasses(array
 	'PCT\CustomElements\Plugins\Ratings'								=> $path.'/PCT/CustomElements/Plugins/Ratings/Ratings.php',	
 	'PCT\CustomElements\Plugins\Ratings\Backend\TableCustomElementRatings'	=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableCustomElementRatings.php',	
 	'PCT\CustomElements\Filters\Ratings'									=> $path.'/PCT/CustomElements/Filters/Tags/Tags.php',	
+	'PCT\CustomElements\Models\RatingsModel'							=> $path.'/PCT/CustomElements/Models/RatingsModel.php',
+	'PCT\CustomElements\Plugins\Ratings\Frontend\ModuleReader'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Frontend/ModuleReader.php',
+	'PCT\CustomElements\Plugins\Ratings\Backend\TableModule'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableModule.php',	
 	'Contao\PCT_RatingsModel'											=> $path.'/Contao/PCT_RatingsModel.php',
-	'PCT\CustomElements\Models\RatingsModel'							=> $path.'/PCT/CustomElements/Models/RatingsModel.php',	
 ));
 
 /**
@@ -41,7 +43,9 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'customelement_attr_ratings'		=> $path.'/templates',
-	'customcatalog_filter_ratings'		=> $path.'/templates',
-	'form_comment_ratings'				=> $path.'/templates',
+	'customelement_attr_ratings'		=> $path.'/templates/attributes',
+	'customcatalog_filter_ratings'		=> $path.'/templates/filters',
+	'form_comment_ratings'				=> $path.'/templates/forms',
+	'mod_customcatalog_ratings' 		=> $path.'/templates/modules',
+	'rating_default'					=> $path.'/templates/ratings',
 ));

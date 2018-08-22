@@ -43,6 +43,7 @@ class Ratings
 		$intPid = $objAttribute->getOrigin()->get('pid');
 		$strSource = $objAttribute->getOrigin()->get('table').'_'.$objAttribute->get('id');
 		$strTable = $objAttribute->getOrigin()->get('table');
+		$intAttribute = $objAttribute->get('id');
 		$intRating = 0;
 		
 		// add new rating via comments
@@ -88,7 +89,7 @@ class Ratings
 		// add new rating via ajax
 		if( \Input::get('attr_id') == $objAttribute->get('id') && (boolean)\Environment::get('isAjaxRequest') === true)
 		{
-			$intRating = $this->addNewRating(\Input::get('value'),$objAttribute->getOrigin()->get('table'),$objAttribute->getOrigin()->get('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1));
+			$intRating = $this->addNewRating(\Input::get('value'),$strTable,$intPid,$intAttribute,($objAttribute->get('ratings_moderate') ? '' : 1));
 		}
 		
 		// send notification
@@ -121,8 +122,49 @@ class Ratings
 			$objEmail->sendTo(array_unique($arrNotifies));
 		}
 		
+		// add ratings list to template by simulating a ratings reader module
+		#$this->addRatingsToTemplate($objTemplate,$strTable,$intPid,$intAttribute);
+		
 		// return empty to bypass the hook return value
 		return '';
+	}
+	
+	
+	/**
+	 * Render the ratings list
+	 * @param string	The source
+	 * @param integer	The entry ID
+	 * @param integer	The attribute ID
+	 * @param object	Optional config array
+	 */
+	public function renderRatings($strSource,$intPid,$intAttribute,$objConfig=null)
+	{
+		// find all related rating records
+		$objRatings = \PCT\CustomElements\Models\RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
+		
+		if($objRatings === null)
+		{
+			return;
+		}
+		
+		// @var object FrontendTemplate
+		$objTemplate = new \FrontendTemplate($objConfig->template ?: 'mod_customcatalog_ratings');
+		
+		return $objTemplate->parse();
+	}
+	
+	
+	/**
+	 * Add ratings list to template
+	 * @param object	The template object
+	 * @param string	The source
+	 * @param integer	The entry ID
+	 * @param integer	The attribute ID
+	 * @param object	Optional config array
+	 */
+	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfig=null)
+	{
+		#$objTemplate->ratings = $this->renderRatings($strSource,$intPid,$intAttribute,$objConfig=null);
 	}
 	
 	

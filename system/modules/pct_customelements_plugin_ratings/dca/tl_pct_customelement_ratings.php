@@ -131,7 +131,7 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		),
 		'attr_id' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['parent'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['attr_id'],
 			'filter'                  => true,
 			'sorting'                 => true,
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
@@ -168,7 +168,31 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		),
 		'comment' => array
 		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['comment'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-		)
+		),
+		'member' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['member'],
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+		),
+		'helpful' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['helpful'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'input',
+			'eval'					  => array('readonly'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'not_helpful' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['not_helpful'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'input',
+			'eval'					  => array('readonly'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
 	)
 );

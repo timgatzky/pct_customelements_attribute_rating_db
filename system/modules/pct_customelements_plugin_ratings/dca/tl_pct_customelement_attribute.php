@@ -61,9 +61,13 @@ $objDcaHelper->addSubpalette('allowComments',array('com_notify','com_order','com
 /**
  * Fields
  */
-if($objDcaHelper->getActiveRecord()->type == $strType)
+if($objDcaHelper->getActiveRecord()->type == $strType && in_array('ratings',\PCT\CustomElements\Core\PluginFactory::getActivePlugins()))
 {
-	
+	if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable())
+	{
+		// Show template info
+		\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_attribute'], 'customelement_attr_ratings'));
+	}
 }
 
 $objDcaHelper->addFields(array

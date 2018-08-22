@@ -29,4 +29,28 @@ class RatingsModel extends \Model
 	 * @var string
 	 */
 	protected static $strTable = 'tl_pct_customelement_ratings';
+	
+	
+	/**
+	 * Find all published ratings by their parent ID and source and attribute ID
+	 * @param string	The source
+	 * @param integer 	The entry ID
+	 * @param integer	The attribute ID
+	 * @param array   	An optional options array
+	 *
+	 * @return \Model\Collection|null
+	 */
+	public static function findPublishedBySourceAndPidAndAttribute($strSource, $intPid, $intAttribute, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("$t.pid=? AND $t.source=? AND $t.attr_id=? AND $t.published=1");
+		$arrValues = array($intPid,$strSource,$intAttribute);
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.rating";
+		}
+		
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
+	}
 }

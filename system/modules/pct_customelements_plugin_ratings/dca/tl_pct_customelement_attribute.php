@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_attribute']['palettes'][$strType] = $ob
 /**
  * Subpalettes
  */
-$objDcaHelper->addSubpalette('allowRatings',array('ratings_notify','ratings_sortOrder','ratings_perPage','ratings_moderate'));
+$objDcaHelper->addSubpalette('allowRatings',array('ratings_notify','ratings_sortOrder','ratings_moderate'));
 $objDcaHelper->addSubpalette('allowComments',array('com_notify','com_order','com_perPage','com_moderate','com_bbcode','com_requireLogin','com_disableCaptcha'));
 
 
@@ -63,8 +63,9 @@ $objDcaHelper->addSubpalette('allowComments',array('com_notify','com_order','com
  */
 if($objDcaHelper->getActiveRecord()->type == $strType && in_array('ratings',\PCT\CustomElements\Core\PluginFactory::getActivePlugins()))
 {
-	if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable())
+	if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable() && $objDcaHelper->getActiveRecord()->allowRatings)
 	{
+		\Message::reset();
 		// Show template info
 		\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_attribute'], 'customelement_attr_ratings'));
 	}
@@ -116,7 +117,7 @@ $objDcaHelper->addFields(array
 		'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_moderate'],
 		'exclude'                 => true,
 		'inputType'               => 'checkbox',
-		'eval'                    => array('tl_class'=>'w50'),
+		'eval'                    => array('tl_class'=>'clr w50'),
 		'sql'                     => "char(1) NOT NULL default ''"
 	),
 	

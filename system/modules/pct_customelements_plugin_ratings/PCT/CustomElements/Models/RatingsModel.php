@@ -53,4 +53,21 @@ class RatingsModel extends \Model
 		
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
+	
+	
+	/**
+	 * Calculate the average rating of all published ratings
+	 * @param string	The source
+	 * @param integer 	The entry ID
+	 * @param integer	The attribute ID
+	 * @param array   	An optional options array
+	 *
+	 * @return number
+	 */
+	public static function averageRatingBySourceAndPidAndAttribute($strSource, $intPid, $intAttribute, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$objResult = \Database::getInstance()->prepare("SELECT AVG(rating) as average FROM $t WHERE $t.pid=? AND $t.source=? AND $t.attr_id=? AND $t.published=1")->limit(1)->execute($intPid,$strSource,$intAttribute);
+		return $objResult->average ?: 0;
+	}
 }

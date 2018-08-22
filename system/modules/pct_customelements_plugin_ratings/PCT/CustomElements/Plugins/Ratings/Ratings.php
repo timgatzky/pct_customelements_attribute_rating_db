@@ -17,6 +17,13 @@
  */
 namespace PCT\CustomElements\Plugins;
 
+
+/**
+ * Imports
+ */
+use PCT\CustomElements\Models\RatingsModel;
+
+
 /**
  * Class file
  * Ratings
@@ -50,14 +57,13 @@ class Ratings
 		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
 		{
 			// Adjust the comments headline level
-			$intHl = min(intval(str_replace('h', '', $this->hl)), 5);
-			$objTemplate->hlc = 'h' . ($intHl + 1);
-
+			$objTemplate->hlc = 'h4';
 			$objTemplate->allowComment = true;
 			$objTemplate->source = $strTable;
 			$objTemplate->attr_id = $objAttribute->get('id');
 			$objTemplate->pid = $intPid;
 			
+			// @var object
 			$objComments = new \Contao\Comments();
 			
 			// Notifies
@@ -122,8 +128,8 @@ class Ratings
 			$objEmail->sendTo(array_unique($arrNotifies));
 		}
 		
-		// add ratings list to template by simulating a ratings reader module
-		#$this->addRatingsToTemplate($objTemplate,$strTable,$intPid,$intAttribute);
+		// add ratings to template
+		$this->addRatingsToTemplate($objTemplate,$strTable,$intPid,$intAttribute);
 		
 		// return empty to bypass the hook return value
 		return '';
@@ -131,26 +137,87 @@ class Ratings
 	
 	
 	/**
-	 * Render the ratings list
-	 * @param string	The source
-	 * @param integer	The entry ID
-	 * @param integer	The attribute ID
-	 * @param object	Optional config array
+	 * Render the ratings
+	 * @param object	The ModelCollection of rating records
+	 * @param string	The rating template
+	 * @param object	The configuration object for the comments
+	 * @return string
 	 */
-	public function renderRatings($strSource,$intPid,$intAttribute,$objConfig=null)
+	public static function renderRatings($objRatings,$strTemplate='rating_default',$objConfigComments=null)
 	{
-		// find all related rating records
-		$objRatings = \PCT\CustomElements\Models\RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
-		
-		if($objRatings === null)
+		if( empty($objRatings) )
 		{
-			return;
+			return '';
 		}
 		
-		// @var object FrontendTemplate
-		$objTemplate = new \FrontendTemplate($objConfig->template ?: 'mod_customcatalog_ratings');
+		// @var object Comments
+		$objComments = new \Comments();
 		
-		return $objTemplate->parse();
+		$arrReturn = array();
+		
+		foreach($objRatings as $objRating)
+		{
+			$objTemplate = new \FrontendTemplate( $strTemplate );
+			$objTemplate->Rating = $objRating;
+			$objTemplate->rating = $objRating->rating;
+			$objTemplate->attr_id = $objRatings->attr_id;
+			$objTemplate->source = $objRatings->source;
+			$objTemplate->pid = $objRatings->pid;
+
+			if($objRating->helpful > 0)
+			{
+				$objTemplate->helpful = sprintf(($objRating->helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_helpful']),$objRating->helpful);
+			}
+			if($objRating->not_helpful > 0)
+			{
+				$objTemplate->not_helpful = sprintf(($objRating->not_helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful']),$objRating->not_helpful);
+			}
+			
+			// author information
+			if($objRating->member > 0)
+			{
+				$objMember = \MemberModel::findByPk( $objRating->member );
+				$objTemplate->MemberModel = $objMember;
+				$objTemplate->author = $objMember->firstname.' '.$objMember->lastname;
+			}
+			
+			// comments
+			if($objRating->comment > 0)
+			{
+				if( $objConfigComments === null)
+				{
+					$objConfigComments = new \StdClass;
+				}
+				
+				$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$objRating->source.'_'.$objRating->attr_id,$objRating->pid,$GLOBALS['TL_ADMIN_EMAIL']);
+			}
+			
+			// helpful voting form
+			$formID = 'form_ratings_helpful_'.$objRating->id;
+			$objTemplate->formID = $formID;
+			$objTemplate->helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_helpful_label'];
+			$objTemplate->not_helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_label'];
+			// voting form submitted
+			if( \Input::post('FORM_SUBMIT') == $formID )
+			{
+				// voted helpful
+				if( \Input::post('helpful') != '' )
+				{
+					$objRating->__set('helpful',$objRating->helpful + 1);
+				}
+				// voted not helpful
+				else if( \Input::post('not_helpful') != '' )
+				{
+					$objRating->__set('not_helpful',$objRating->not_helpful + 1);
+				}
+				// update the record
+				$objRating->save();
+			}
+			
+			$arrReturn[] = $objTemplate->parse();
+		}
+		
+		return implode('', $arrReturn);
 	}
 	
 	
@@ -162,9 +229,21 @@ class Ratings
 	 * @param integer	The attribute ID
 	 * @param object	Optional config array
 	 */
-	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfig=null)
+	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfigComments=null)
 	{
-		#$objTemplate->ratings = $this->renderRatings($strSource,$intPid,$intAttribute,$objConfig=null);
+		// find ratings records for the current entry
+		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
+		if($objRatings === null)
+		{
+			return;
+		}
+		
+		// render the ratings
+		$objTemplate->ratings = $this->renderRatings($objRatings,$objConfig->template,$objConfigComments);
+		// total
+		$objTemplate->total = RatingsModel::countBy(array('source=? AND pid=? AND attr_id=?'),array($strSource,$intPid,$intAttribute));
+		// average
+		$objTemplate->average = RatingsModel::averageRatingBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
 	}
 	
 	

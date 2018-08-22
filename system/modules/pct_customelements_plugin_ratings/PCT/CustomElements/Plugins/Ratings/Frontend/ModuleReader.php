@@ -25,6 +25,7 @@ use PCT\CustomElements\Plugins\CustomCatalog\Core\CustomCatalogFactory;
 use PCT\CustomElements\Plugins\CustomCatalog\Core\AttributeFactory;
 use PCT\CustomElements\Plugins\CustomCatalog\Frontend\ModuleReader as CC_ModuleReader;
 use PCT\CustomElements\Models\RatingsModel;
+use PCT\CustomElements\Plugins\Ratings;
 
 
 /**
@@ -199,8 +200,6 @@ class ModuleReader extends \Module
 			$this->Template->pagination = $objPagination->generate("\n  ");
 		}
 
-		#$objArticles = $this->fetchItems($this->news_archives, $blnFeatured, ($limit ?: 0), $offset);
-		
 		// order
 		$strModelTable = RatingsModel::getTable();
 		$strSorting = $this->customcatalog_sorting;
@@ -226,8 +225,18 @@ class ModuleReader extends \Module
 		// find ratings records for the current entry
 		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($objCC->getTable(),$objEntry->id,$objAttribute->id,$arrOptions);
 		
+		// Comments
+		$objConfig = new \StdClass;
+		$objConfig->perPage = $this->perPage;
+		$objConfig->order = $this->com_order;
+		$objConfig->template = $this->com_template;
+		$objConfig->requireLogin = $this->com_requireLogin;
+		$objConfig->disableCaptcha = $this->com_disableCaptcha;
+		$objConfig->bbcode = $this->com_bbcode;
+		$objConfig->moderate = $this->com_moderate;
+		
 		// prepare the rating records
-		$this->Template->ratings = $this->parseRatings($objRatings);
+		$this->Template->ratings = Ratings::renderRatings($objRatings,$this->customcatalog_template,$objConfig);
 		
 		$arrCssID = deserialize($this->cssID);
 		$arrClasses = explode(' ', $arrCssID[1]);
@@ -244,85 +253,5 @@ class ModuleReader extends \Module
 	}
 	
 	
-	/**
-	 * Prepare the rating records for template output
-	 * @param object	ModelCollection of Rating records
-	 * @return string	Html output
-	 */
-	protected function parseRatings($objRatings)
-	{
-		if( empty($objRatings) )
-		{
-			return '';
-		}
-		
-		// @var object Comments
-		$objComments = new \Comments();
-		
-		$arrReturn = array();
-		
-		foreach($objRatings as $objRating)
-		{
-			$objTemplate = new \FrontendTemplate( $this->strRatingsTemplate );
-			$objTemplate->Rating = $objRating;
-			$objTemplate->rating = $objRating->rating;
-			
-			if($objRating->helpful > 0)
-			{
-				$objTemplate->helpful = sprintf(($objRating->helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_helpful']),$objRating->helpful);
-			}
-			if($objRating->not_helpful > 0)
-			{
-				$objTemplate->not_helpful = sprintf(($objRating->not_helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful']),$objRating->not_helpful);
-			}
-			
-			// author information
-			if($objRating->member > 0)
-			{
-				$objMember = \MemberModel::findByPk( $objRating->member );
-				$objTemplate->MemberModel = $objMember;
-				$objTemplate->author = $objMember->firstname.' '.$objMember->lastname;
-			}
-			
-			// comments
-			if($objRating->comment > 0)
-			{
-				$objConfig = new \StdClass;
-				$objConfig->perPage = $this->perPage;
-				$objConfig->order = $this->com_order;
-				$objConfig->template = $this->com_template;
-				$objConfig->requireLogin = $this->com_requireLogin;
-				$objConfig->disableCaptcha = $this->com_disableCaptcha;
-				$objConfig->bbcode = $this->com_bbcode;
-				$objConfig->moderate = $this->com_moderate;
-				$objComments->addCommentsToTemplate($objTemplate,$objConfig,$objRating->source.'_'.$objRating->attr_id,$objRating->pid,'');
-			}
-			
-			// helpful voting form
-			$formID = 'form_ratings_helpful_'.$objRating->id;
-			$objTemplate->formID = $formID;
-			$objTemplate->helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_helpful_label'];
-			$objTemplate->not_helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_label'];
-			// voting form submitted
-			if( \Input::post('FORM_SUBMIT') == $formID )
-			{
-				// voted helpful
-				if( \Input::post('helpful') != '' )
-				{
-					$objRating->__set('helpful',$objRating->helpful + 1);
-				}
-				// voted not helpful
-				else if( \Input::post('not_helpful') != '' )
-				{
-					$objRating->__set('not_helpful',$objRating->not_helpful + 1);
-				}
-				// update the record
-				$objRating->save();
-			}
-			
-			$arrReturn[] = $objTemplate->parse();
-		}
-		
-		return implode('', $arrReturn);
-	}
+	
 }

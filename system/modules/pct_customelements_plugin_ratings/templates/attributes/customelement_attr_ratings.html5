@@ -78,10 +78,14 @@ jQuery(document).ready(function()
 </script>
 
 <div class="widget rateit_container">
-	<div class="rating-big"><?php echo $this->value; ?>/<?php echo $this->max_value; ?></div>
+	
+	<div class="total"><?= $this->total; ?></div>
+	<div class="average"><?= $this->average; ?></div>
+	
+	<div class="rating-big"><?php echo $this->average; ?>/<?php echo $this->max_value; ?></div>
 	<div id="<?php echo $this->selector; ?>" class="rateit"
 		data-attr_id="<?php echo $this->id; ?>"
-		data-rateit-value="<?php echo $this->value; ?>"
+		data-rateit-value="<?php echo $this->average; ?>"
 		data-rateit-min="<?php echo $this->min_value; ?>"
 		data-rateit-max="<?php echo $this->max_value; ?>"
 		data-rateit-step="<?php echo $steps; ?>"

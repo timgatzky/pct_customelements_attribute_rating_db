@@ -6,7 +6,13 @@
 	<?php if($this->empty): ?>
 		<p class="empty"><?= $this->empty ?></p>
 	<?php else: ?>
+	<div class="ratings block">
 	<?= $this->ratings; ?>
+	<?php endif; ?>
+	</div>
+	
+	<?php if($this->pagination): ?>
+	<?= $this->pagination; ?>
 	<?php endif; ?>
 
 <?php $this->endblock(); ?>

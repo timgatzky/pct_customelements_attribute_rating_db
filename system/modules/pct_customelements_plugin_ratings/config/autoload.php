@@ -29,8 +29,8 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
-	'PCT\CustomElements\Filters\Ratings'								=> $path.'/PCT/CustomElements/Filters/Ratings/Rating.php',	
-	'PCT\CustomElements\Filters\RatingsSorting'							=> $path.'/PCT/CustomElements/Filters/Ratings/RatingSorting.php',	
+	'PCT\CustomElements\Filters\Ratings'								=> $path.'/PCT/CustomElements/Filters/Ratings/Ratings.php',	
+	'PCT\CustomElements\Filters\RatingsSorting'							=> $path.'/PCT/CustomElements/Filters/Ratings/RatingsSorting.php',	
 	'PCT\CustomElements\Models\RatingsModel'							=> $path.'/PCT/CustomElements/Models/RatingsModel.php',
 	'PCT\CustomElements\Plugins\Ratings\Backend\TableModule'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableModule.php',	
 	'PCT\CustomElements\Plugins\Ratings\Frontend\ModuleReader'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Frontend/ModuleReader.php',

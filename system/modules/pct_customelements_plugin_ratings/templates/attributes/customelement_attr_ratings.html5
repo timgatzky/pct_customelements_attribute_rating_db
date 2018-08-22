@@ -16,7 +16,7 @@ $GLOBALS['TL_CSS'][] = PCT_CUSTOMCATALOG_PATH.'/PCT/CustomElements/Attributes/Ra
 ?>
 
 <?php // options
-$steps = 0.5;
+$steps = 1;
 ?>
 
 <script type="text/javascript">

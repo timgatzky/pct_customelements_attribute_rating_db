@@ -20,10 +20,16 @@ namespace PCT\CustomElements\Filters;
 
 
 /**
+ * Imports
+ */
+use PCT\CustomElements\Models\RatingsModel;
+
+
+/**
  * Class file
  * Ratings
  */
-class Ratings extends \PCT\CustomElements\Filter
+class Ratings extends \PCT\CustomElements\Filters\Range
 {
 	/**
 	 * Init
@@ -34,8 +40,8 @@ class Ratings extends \PCT\CustomElements\Filter
 		
 		// fetch the attribute the filter works on
 		$this->objAttribute = \PCT\CustomElements\Core\AttributeFactory::findById($this->get('attr_id'));
-		// point the filter to the attribute
-		$this->setFilterTarget($this->objAttribute->alias);
+		// point the filter to the target field
+		$this->setFilterTarget(RatingsModel::getTable().'.'.$GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS']['ratings']['field'] ?: 'rating');
 	
 		// use the filter title or use the urlparameter as filter name
 		$name = $this->get('urlparam') ? $this->get('urlparam') : standardize($this->get('title'));
@@ -66,7 +72,7 @@ class Ratings extends \PCT\CustomElements\Filter
 			$varValue = implode('', $varValue);
 		}
 		
-		$t = $this->getTable().'.'.$this->getFilterTarget();
+		$t = $this->getFilterTarget();
 		$where = '';
 		switch($this->get('mode'))
 		{
@@ -89,46 +95,21 @@ class Ratings extends \PCT\CustomElements\Filter
 				break;
 		}
 		
-		$options = array
+		// find matching rating records
+		$objRatings = RatingsModel::findPublishedBySourceAndAttributeAndCustom($this->getTable(),$this->get('attr_id'),$where);
+		
+		if($objRatings === null)
+		{
+			return array();
+		}
+		
+		$arrOptions = array
 		(
-			'column'	=> $t,
-			'where'		=> '('.$where.')',
+			'column'	=> 'id',
+			'operation'	=> 'IN',
+			'value'		=> $objRatings->fetchEach('pid')
 		);
-		return $options;
-	}
-	
-	
-	/**
-	 * Render the filter and return string
-	 * @param string	Name of the attribute
-	 * @param mixed		Active filter values
-	 * @param object	Template object
-	 * @param object	The current filter object
-	 * @return string
-	 */
-	public function renderCallback($strName,$varValue,$objTemplate,$objFilter)
-	{
-		$objTemplate->name = $strName;
-		$objTemplate->label = $this->get('label') ?:  $this->get('title');
 		
-		$objTemplate->minValue = $objTemplate->actMinValue = $this->get('min_value');
-		$objTemplate->maxValue = $objTemplate->actMaxValue = $this->get('max_value');
-		$objTemplate->stepValue = $this->get('steps_value') ?: 1;
-		
-		// use jquery slider and split the submitted value
-		if($this->get('mode') == 'between')
-		{
-			$objTemplate->actMinValue = $varValue[0] ?: $objTemplate->minValue;
-			$objTemplate->actMaxValue = $varValue[1] ?: $objTemplate->maxValue;
-			$objTemplate->useJquery = true;
-		}
-		else
-		{
-			$varValue = $varValue[0];
-		}
-		
-		$objTemplate->value = $varValue;
-			
-		return $objTemplate->parse();
+		return $arrOptions;
 	}
 }

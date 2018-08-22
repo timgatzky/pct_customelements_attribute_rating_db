@@ -82,6 +82,7 @@ if($blnInitialize)
 		'path' 		=> PCT_CUSTOMELEMENTS_RATINGS_PATH,
 		'class'		=> 'PCT\CustomElements\Filters\Ratings',
 		'icon'		=> 'fa fa-star',
+		'field' 	=> 'rating' // default filter field in tl_pct_customelement_ratings
 	);
 	$GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS']['ratings_sorting'] = array
 	(

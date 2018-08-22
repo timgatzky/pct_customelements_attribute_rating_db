@@ -56,6 +56,30 @@ class RatingsModel extends \Model
 	
 	
 	/**
+	 * Find all published ratings by their source and attribute ID and optional a custom condition
+	 * @param string	The source
+	 * @param integer 	The entry ID
+	 * @param string	A custom condition
+	 * @param array   	An optional options array
+	 *
+	 * @return \Model\Collection|null
+	 */
+	public static function findPublishedBySourceAndAttributeAndCustom($strSource, $intAttribute, $strCustom='', array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("$t.source=? AND $t.attr_id=? AND $t.published=1".(strlen($strCustom) > 0 ? ' AND '.$strCustom : '') );
+		$arrValues = array($strSource,$intAttribute);
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.rating";
+		}
+		
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+	
+	/**
 	 * Calculate the average rating of all published ratings
 	 * @param string	The source
 	 * @param integer 	The entry ID

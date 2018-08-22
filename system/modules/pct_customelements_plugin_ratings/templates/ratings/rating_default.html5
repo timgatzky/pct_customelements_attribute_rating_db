@@ -22,7 +22,7 @@
 	
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
-		<input type="hidden" name="REQUEST_TOKEN" value="<?= REQUEST_TOKEN; ?>">
+		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 		<div class="button_container">
 			<button name="helpful" class="button helpful" value="1"><?= $this->helpful_label; ?></button>
 			<button name="not_helpful" class="button helpful" value="1"><?= $this->not_helpful_label; ?></button>

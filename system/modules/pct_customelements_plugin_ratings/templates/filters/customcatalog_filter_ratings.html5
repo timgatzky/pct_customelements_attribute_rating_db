@@ -18,28 +18,28 @@ if($this->useJquery)
 
 
 
-<div <?php echo $this->cssID; ?> class="widget <?php echo $this->class; ?> block">
+<div <?= $this->cssID; ?> class="widget <?= $this->class; ?> block">
 <fieldset class="range_container">
-<?php if($this->label): ?><legend><?php echo $this->label; ?></legend><?php endif; ?>
+<?php if($this->label): ?><legend><?= $this->label; ?></legend><?php endif; ?>
 <?php if($this->useJquery): ?>
-	<?php if($this->label): ?><label for="<?php echo $this->name; ?>"><?php echo $this->label; ?></label><?php endif; ?>
-	<input name="<?php echo $this->name; ?>" type="hidden" id="slider-input_<?php echo $this->name; ?>" value="<?php echo $this->value; ?>">
-	<input readonly type="text" id="slider-text_<?php echo $this->name; ?>">
-	<div id="slider-range_<?php echo $this->name; ?>"></div>
-	<script type="text/javascript">
+	<?php if($this->label): ?><label for="<?= $this->name; ?>"><?= $this->label; ?></label><?php endif; ?>
+	<input name="<?= $this->name; ?>" type="hidden" id="slider-input_<?= $this->name; ?>" value="<?= $this->value; ?>">
+	<input readonly type="text" id="slider-text_<?= $this->name; ?>">
+	<div id="slider-range_<?= $this->name; ?>"></div>
+	<script>
 	/* <![CDATA[ */
 	jQuery(document).ready(function()
 	{
-		var elem = jQuery('#slider-range_<?php echo $this->name; ?>');
-		var text = jQuery('#slider-text_<?php echo $this->name; ?>');
-		var input = jQuery('#slider-input_<?php echo $this->name; ?>');
+		var elem = jQuery('#slider-range_<?= $this->name; ?>');
+		var text = jQuery('#slider-text_<?= $this->name; ?>');
+		var input = jQuery('#slider-input_<?= $this->name; ?>');
 		elem.slider(
 		{
 		   range: true,
-		   min: <?php echo $this->minValue; ?>,
-		   max: <?php echo $this->maxValue; ?>,
-		   step: <?php echo $this->stepValue; ?>,
-		   values: [<?php echo $this->actMinValue; ?>, <?php echo $this->actMaxValue; ?>],
+		   min: <?= $this->minValue; ?>,
+		   max: <?= $this->maxValue; ?>,
+		   step: <?= $this->stepValue; ?>,
+		   values: [<?= $this->actMinValue; ?>, <?= $this->actMaxValue; ?>],
 		   slide: function(event,ui) 
 		   {
 		   		text.val(ui.values[0] + " - " + ui.values[1] );
@@ -59,8 +59,37 @@ if($this->useJquery)
 	/* ]]> */
 	</script>
 <?php else: ?>
-	<input type="range" name="<?php echo $this->name; ?>" min="<?php echo $this->minValue; ?>" max="<?php echo $this->maxValue; ?>" value="<?php echo $this->value; ?>">
+	<input type="range" name="<?= $this->name; ?>" min="<?= $this->minValue; ?>" max="<?= $this->maxValue; ?>" value="<?= $this->value ?: 0; ?>">
+	<label for="<?= $this->name; ?>"><?= $this->value; ?></label>
+	
+	<script>
+	/* <![CDATA[ */
+	jQuery(document).ready(function()
+	{
+		var operation = '';
+		switch('<?= $this->getFilter()->mode; ?>')
+		{
+			case 'ht': operation = '>'; break;
+			case 'hte': operation = '>='; break;
+			case 'lt': operation = '<'; break; 
+			case 'lte': operation = '<='; break; 
+		}
+		
+		if(jQuery('label[for="<?= $this->name; ?>"]').text() != '')
+		{
+			jQuery('label[for="<?= $this->name; ?>"]').text( operation+' <?= $this->value; ?>' );
+		}
+		
+		// update label text on input change
+		jQuery('input[name="<?= $this->name; ?>"]').change(function(e) 
+		{
+			jQuery('label[for="<?= $this->name; ?>"]').text( operation+' '+jQuery(this).val() );
+		});
+	});
+	/* ]]> */
+	</script>
+	
 <?php endif; ?>
 </fieldset>
-<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>	
+<?php if($this->description): ?><div class="description"><?= $this->description; ?></div><?php endif; ?>	
 </div>

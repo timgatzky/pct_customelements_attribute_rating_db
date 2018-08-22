@@ -29,12 +29,13 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
+	'PCT\CustomElements\Filters\Ratings'								=> $path.'/PCT/CustomElements/Filters/Ratings/Rating.php',	
+	'PCT\CustomElements\Filters\RatingsSorting'							=> $path.'/PCT/CustomElements/Filters/Ratings/RatingSorting.php',	
+	'PCT\CustomElements\Models\RatingsModel'							=> $path.'/PCT/CustomElements/Models/RatingsModel.php',
+	'PCT\CustomElements\Plugins\Ratings\Backend\TableModule'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableModule.php',	
+	'PCT\CustomElements\Plugins\Ratings\Frontend\ModuleReader'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Frontend/ModuleReader.php',
 	'PCT\CustomElements\Plugins\Ratings'								=> $path.'/PCT/CustomElements/Plugins/Ratings/Ratings.php',	
 	'PCT\CustomElements\Plugins\Ratings\Backend\TableCustomElementRatings'	=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableCustomElementRatings.php',	
-	'PCT\CustomElements\Filters\Ratings'									=> $path.'/PCT/CustomElements/Filters/Tags/Tags.php',	
-	'PCT\CustomElements\Models\RatingsModel'							=> $path.'/PCT/CustomElements/Models/RatingsModel.php',
-	'PCT\CustomElements\Plugins\Ratings\Frontend\ModuleReader'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Frontend/ModuleReader.php',
-	'PCT\CustomElements\Plugins\Ratings\Backend\TableModule'			=> $path.'/PCT/CustomElements/Plugins/Ratings/Backend/TableModule.php',	
 	'Contao\PCT_RatingsModel'											=> $path.'/Contao/PCT_RatingsModel.php',
 ));
 

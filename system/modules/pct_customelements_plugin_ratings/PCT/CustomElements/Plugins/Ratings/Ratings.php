@@ -47,7 +47,7 @@ class Ratings
 			return '';
 		}
 				
-		$intPid = $objAttribute->getOrigin()->get('pid');
+		$intPid = $objAttribute->getActiveRecord()->id;
 		$strSource = $objAttribute->getOrigin()->get('table').'_'.$objAttribute->get('id');
 		$strTable = $objAttribute->getOrigin()->get('table');
 		$intAttribute = $objAttribute->get('id');

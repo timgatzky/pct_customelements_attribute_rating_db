@@ -4,7 +4,7 @@
  * Contao 
  * German translation file 
  * 
- * copyright  Tim Gatzky 2014
+ * copyright  Tim Gatzky 2018
  * author     Tim Gatzky <info@tim-gatzky.de>
  * Translator:  
  * 
@@ -16,5 +16,7 @@
 /**
  * Filters
  */
-$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['tags'][0]		= 'Tags';
-$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['tags'][1]		= 'Filterung nach mehreren Werten eines Tags-Attributes';
+$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['ratings'][0]				= 'Bewertungen';
+$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['ratings'][1]				= 'Fügen Sie einen Filter hinzu, der nach abgegebenen Bewertungen filtert';
+$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['ratings_sorting'][0]		= 'Bewertungen-Sortierung';
+$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['ratings_sorting'][1]		= 'Fügen Sie einen Sortierungsfilter für Bewertungen hinzu.';

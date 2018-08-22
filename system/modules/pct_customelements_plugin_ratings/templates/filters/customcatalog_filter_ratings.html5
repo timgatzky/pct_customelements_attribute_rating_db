@@ -1,0 +1,66 @@
+<?php
+/**
+ * Range filter template
+ */
+?>
+<?php 
+if($this->useJquery)
+{
+	global $objPage;
+	if(!$objPage->hasJQuery)
+	{
+		$GLOBALS['TL_JAVASCRIPT'][] = '//code.jquery.com/jquery-1.10.2.js';
+	}
+	$GLOBALS['TL_CSS'][] = '//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css';
+	$GLOBALS['TL_JAVASCRIPT'][] = '//code.jquery.com/ui/1.11.2/jquery-ui.js';	
+}
+?>
+
+
+
+<div <?php echo $this->cssID; ?> class="widget <?php echo $this->class; ?> block">
+<fieldset class="range_container">
+<?php if($this->label): ?><legend><?php echo $this->label; ?></legend><?php endif; ?>
+<?php if($this->useJquery): ?>
+	<?php if($this->label): ?><label for="<?php echo $this->name; ?>"><?php echo $this->label; ?></label><?php endif; ?>
+	<input name="<?php echo $this->name; ?>" type="hidden" id="slider-input_<?php echo $this->name; ?>" value="<?php echo $this->value; ?>">
+	<input readonly type="text" id="slider-text_<?php echo $this->name; ?>">
+	<div id="slider-range_<?php echo $this->name; ?>"></div>
+	<script type="text/javascript">
+	/* <![CDATA[ */
+	jQuery(document).ready(function()
+	{
+		var elem = jQuery('#slider-range_<?php echo $this->name; ?>');
+		var text = jQuery('#slider-text_<?php echo $this->name; ?>');
+		var input = jQuery('#slider-input_<?php echo $this->name; ?>');
+		elem.slider(
+		{
+		   range: true,
+		   min: <?php echo $this->minValue; ?>,
+		   max: <?php echo $this->maxValue; ?>,
+		   step: <?php echo $this->stepValue; ?>,
+		   values: [<?php echo $this->actMinValue; ?>, <?php echo $this->actMaxValue; ?>],
+		   slide: function(event,ui) 
+		   {
+		   		text.val(ui.values[0] + " - " + ui.values[1] );
+		   		input.val(ui.values[0] + "," + ui.values[1]);
+		   },
+		   change:function(event,ui)
+		   {
+			   // submit form on change
+			   <?php if($this->getFilter()->getModule()->customcatalog_filter_submit): ?>
+			   jQuery(event.target).parents('form').submit();
+			   <?php endif; ?>
+		   }
+		});
+		text.val(elem.slider("values",0) + " - " + elem.slider("values",1));
+		input.val(elem.slider("values",0) + "," + elem.slider("values",1));
+	});
+	/* ]]> */
+	</script>
+<?php else: ?>
+	<input type="range" name="<?php echo $this->name; ?>" min="<?php echo $this->minValue; ?>" max="<?php echo $this->maxValue; ?>" value="<?php echo $this->value; ?>">
+<?php endif; ?>
+</fieldset>
+<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>	
+</div>

@@ -20,6 +20,11 @@ define('PCT_CUSTOMELEMENTS_RATINGS_PATH', 'system/modules/pct_customelements_plu
 define('PCT_CUSTOMELEMENTS_RATINGS_VERSION', '1.0.0');
 
 $blnInstallTool = true;
+if(strlen(strpos(\Environment::getInstance()->scriptName, '/contao/install.php')) > 0 || strlen(strpos(\Environment::getInstance()->requestUri, '/contao/install')) > 0)
+{
+	$blnInstallTool = true;
+}
+
 $blnInitialize = true;
 if( !in_array('pct_customelements_plugin_customcatalog', \Config::getInstance()->getActiveModules()) || !class_exists('Database',true) )
 {
@@ -39,7 +44,7 @@ if($blnInstallTool == false && count(\Session::getInstance()->getData()) > 0)
 /**
  * Globals
  */
-$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlPaginationParameter']				= 'page_r';
+$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlPaginationParameter'] = 'page_r';
 
 
 /**
@@ -78,7 +83,15 @@ if($blnInitialize)
 		'class'		=> 'PCT\CustomElements\Filters\Ratings',
 		'icon'		=> 'fa fa-star',
 	);
+	$GLOBALS['PCT_CUSTOMELEMENTS']['FILTERS']['ratings_sorting'] = array
+	(
+		'label'		=> &$GLOBALS['TL_LANG']['PCT_CUSTOMELEMENTS']['FILTERS']['ratings_sorting'],
+		'path' 		=> PCT_CUSTOMELEMENTS_RATINGS_PATH,
+		'class'		=> 'PCT\CustomElements\Filters\RatingsSorting',
+		'icon'		=> 'fa fa-star',
+	);
 }
+
 
 /**
  * Register the model classes
@@ -89,12 +102,5 @@ $GLOBALS['TL_MODELS']['tl_pct_customelement_ratings'] = 'Contao\PCT_RatingsModel
 /**
  * Hooks
  */
-if(TL_MODE == 'BE')
-{
-	$GLOBALS['TL_HOOKS']['loadDataContainer'][] 				= array('PCT\CustomElements\Backend\TableCustomElementTags','loadAssets');
-}
-
-#$GLOBALS['CUSTOMELEMENT_HOOKS']['renderField'][] 			= array('PCT\CustomElements\Attributes\Tags','prepareField');
 $GLOBALS['CUSTOMELEMENTS_HOOKS']['prepareRendering'][] 		= array('PCT\CustomElements\Plugins\Ratings','prepareRenderingCallback');
 $GLOBALS['TL_HOOKS']['addComment'][] 						= array('PCT\CustomElements\Plugins\Ratings','addCommentCallback');
-#$GLOBALS['CUSTOMELEMENTS_HOOKS']['processWildcardValue'][] 	= array('PCT\CustomElements\Attributes\Tags','processWildcardValue');

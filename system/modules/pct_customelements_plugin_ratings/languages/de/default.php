@@ -51,3 +51,5 @@ $GLOBALS['TL_LANG']['MSC']['ratings_filter']['helpful']['asc'] 		= 'Nützlich [a
 $GLOBALS['TL_LANG']['MSC']['ratings_filter']['helpful']['desc'] 	= 'Nützlich [absteigen]';
 $GLOBALS['TL_LANG']['MSC']['ratings_filter']['not_helpful']['asc'] 	= 'Nicht nützlich [aufsteigend]';
 $GLOBALS['TL_LANG']['MSC']['ratings_filter']['not_helpful']['desc']	= 'Nicht nützlich [absteigen]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['count']['asc'] 	= 'Anzahl Wertung [aufsteigend]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['count']['desc']	= 'Anzahl Wertung [absteigen]';

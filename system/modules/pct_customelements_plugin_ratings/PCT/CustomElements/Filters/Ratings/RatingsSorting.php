@@ -59,17 +59,31 @@ class RatingsSorting extends \PCT\CustomElements\Filters\Sorting
 				$field = $arrMatch[1];
 				$sorting = $arrMatch[2];
 			}
+			
+			$sorting = strtoupper($sorting);
 				
 			// mysql has no natural order for numeric values, so we multiply 
-			if($this->get('type') == 'sorting_numeric')
+			if($field == 'rating')
 			{
 				$field .= "+0"; 
 			}
 			
-			$options['order'] = RatingsModel::getTable().'.'.$field.' '.strtoupper($sorting);
+			$options['order'] = RatingsModel::getTable().'.'.$field.' '.$sorting;
 			
-			// find matching rating records ordered
-			$objRatings = RatingsModel::findPublishedBySourceAndAttributeAndCustom($this->getTable(),$this->get('attr_id'),'',$options);
+			$objRatings = null;
+			// count is not a field, its a placeholder
+			if($field == 'count')
+			{
+				$objRatings = \Database::getInstance()->prepare("SELECT *,COUNT(rating) as count FROM ".RatingsModel::getTable()." WHERE source=? AND attr_id=? GROUP BY pid ORDER BY count(rating) $sorting")
+								->execute($this->getTable(),$this->get('attr_id'));
+				// recursivly convert to object
+				$objRatings = json_decode(json_encode($objRatings->fetchAllAssoc() ?: array()), FALSE);
+			}
+			else
+			{
+				// find matching rating records ordered
+				$objRatings = RatingsModel::findPublishedBySourceAndAttributeAndCustom($this->getTable(),$this->get('attr_id'),'',$options);
+			}
 			
 			// collect ids in order
 			if($objRatings !== null)
@@ -87,11 +101,12 @@ class RatingsSorting extends \PCT\CustomElements\Filters\Sorting
 		
 		if(!empty($arrIds))
 		{
-			$arrOptions['order'] = array('FIELD(id,'.implode(',', $arrIds).')');
+			$arrOptions['order'] = array('FIELD(id,'.implode(',', array_unique($arrIds)).')');
 		}
 		
 		return $arrOptions;
 	}
+	
 	
 	/**
 	 * Prepare the options for the widget

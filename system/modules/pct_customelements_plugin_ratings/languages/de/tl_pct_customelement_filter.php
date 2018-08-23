@@ -36,3 +36,4 @@ $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sort
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['rating'] = 'Bewertung (absteigend und aufsteigend) [rating]';
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['helpful'] = 'Nützlich (absteigend und aufsteigend) [helpful]';
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['not_helpful'] = 'Nicht nützlich (absteigend und aufsteigend) [not_helpful]';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['count'] = 'Anzahl abgegebener Stimmen (absteigend und aufsteigend)';

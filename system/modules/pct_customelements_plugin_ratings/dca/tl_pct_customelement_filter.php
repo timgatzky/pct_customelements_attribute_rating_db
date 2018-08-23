@@ -80,7 +80,7 @@ if($objDcaHelper->getActiveRecord()->type == $strType)
 	// let user choose the fields
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['label'] = &$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'];
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['inputType'] = 'checkboxWizard';
-	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['options'] = array('tstamp','rating','helpful','not_helpful');
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['options'] = array('tstamp','rating','helpful','not_helpful','count');
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['reference'] = &$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'];
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['eval'] = array('tl_class'=>'clr','multiple'=>true);
 }

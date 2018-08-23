@@ -1,0 +1,33 @@
+<?php
+/**
+ * Select/Radio-Button filter template
+ */
+?>
+
+<?php if($this->radio): ?>
+<div <?php echo $this->cssID; ?> class="widget <?php echo $this->class; ?> block">
+<fieldset class="radio_container">
+	<?php if($this->label): ?><legend><?php echo $this->label; ?></legend><?php endif; ?>
+	<?php foreach($this->options as $option): ?>
+	<div>
+		<input type="radio" class="radio" name="<?php echo $this->name; ?>" value="<?php echo $option['value']; ?>" <?php if($option['selected']):?>checked<?php endif;?> ><?php echo $option['label']; ?> <?php if($option['id']): ?>(<?php echo $this->countValue($option['value']); ?>)<?php endif; ?>
+		<label id="lbl_<?php echo $option['id']; ?>" for="opt_<?php echo $option['id']; ?>"><?php echo $option['label']; ?></label>
+	</div>
+	<?php endforeach; ?>
+	<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>
+</fieldset>
+<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>	
+</div>
+<?php else: ?>
+<div <?php echo $this->cssID; ?> class="widget <?php echo $this->class; ?> block">
+<fieldset class="select_container">
+	<?php if($this->label): ?><legend><?php echo $this->label; ?></legend><?php endif; ?>
+	<select name="<?php echo $this->name; ?>">
+	<?php foreach($this->options as $option): ?>
+	<option value="<?php echo $option['value']; ?>"<?php if($option['selected']):?>selected<?php endif;?>><?php echo $option['label']; ?></option>
+	<?php endforeach; ?>
+	</select>
+</fieldset>
+<?php if($this->description): ?><div class="description"><?php echo $this->description; ?></div><?php endif; ?>	
+</div>
+<?php endif; ?>

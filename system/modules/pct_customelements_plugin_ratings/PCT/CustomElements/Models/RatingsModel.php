@@ -69,7 +69,7 @@ class RatingsModel extends \Model
 		$t = static::$strTable;
 		$arrColumns = array("$t.source=? AND $t.attr_id=? AND $t.published=1".(strlen($strCustom) > 0 ? ' AND '.$strCustom : '') );
 		$arrValues = array($strSource,$intAttribute);
-
+		
 		if (!isset($arrOptions['order']))
 		{
 			$arrOptions['order'] = "$t.rating";

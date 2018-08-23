@@ -64,18 +64,23 @@ $arrPalettes = $objDcaHelper->getPalettesAsArray('default');
 $arrPalettes['settings_legend'][] = 'attr_id';
 $arrPalettes['settings_legend'][] = 'includeReset';
 $arrPalettes['settings_legend'][] = 'isRadio';
+$arrPalettes['settings_legend'][] = 'defaultMulti';
 $GLOBALS['TL_DCA']['tl_pct_customelement_filter']['palettes'][$strType] = $objDcaHelper->generatePalettes($arrPalettes);
 if($objDcaHelper->getActiveRecord()->type == $strType)
 {
 	if(\Input::get('act') == 'edit' && \Input::get('table') == $objDcaHelper->getTable())
 	{
 		// Show template info
-		\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_filter'], 'customcatalog_filter_select'));
+		\Message::addInfo(sprintf($GLOBALS['TL_LANG']['PCT_CUSTOMCATALOG']['MSC']['templateInfo_filter'], 'customcatalog_filter_ratings_sorting'));
 	}
 	
 	// set the template selection default value
 	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['template']['default'] = 'customcatalog_filter_select';
 	
-	// set attribute selection to number attributes only
-	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['attr_id']['options_values'] = array('rateit','text');
+	// let user choose the fields
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['label'] = &$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'];
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['inputType'] = 'checkboxWizard';
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['options'] = array('tstamp','rating','helpful','not_helpful');
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['reference'] = &$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'];
+	$GLOBALS['TL_DCA']['tl_pct_customelement_filter']['fields']['defaultMulti']['eval'] = array('tl_class'=>'clr','multiple'=>true);
 }

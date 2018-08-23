@@ -46,6 +46,7 @@ TemplateLoader::addFiles(array
 (
 	'customelement_attr_ratings'		=> $path.'/templates/attributes',
 	'customcatalog_filter_ratings'		=> $path.'/templates/filters',
+	'customcatalog_filter_ratings_sorting'	=> $path.'/templates/filters',
 	'form_comment_ratings'				=> $path.'/templates/forms',
 	'mod_customcatalog_ratings' 		=> $path.'/templates/modules',
 	'rating_default'					=> $path.'/templates/ratings',

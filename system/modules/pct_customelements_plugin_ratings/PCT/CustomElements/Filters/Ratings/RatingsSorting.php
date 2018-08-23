@@ -20,31 +20,17 @@ namespace PCT\CustomElements\Filters;
 
 
 /**
+ * Imports
+ */
+use PCT\CustomElements\Models\RatingsModel;
+
+
+/**
  * Class file
  * RatingsSorting
  */
-class RatingsSorting extends \PCT\CustomElements\Filter
+class RatingsSorting extends \PCT\CustomElements\Filters\Sorting
 {
-	/**
-	 * Init
-	 */
-	public function __construct($arrData=array())
-	{
-		$this->setData($arrData);
-		
-		// fetch the attribute the filter works on
-		$this->objAttribute = \PCT\CustomElements\Core\AttributeFactory::findById($this->get('attr_id'));
-		// point the filter to the attribute
-		$this->setFilterTarget($this->objAttribute->alias);
-	
-		// use the filter title or use the urlparameter as filter name
-		$name = $this->get('urlparam') ? $this->get('urlparam') : standardize($this->get('title'));
-		
-		// set the filter name
-		$this->setName($name);
-	}
-	
-	
 	/**
 	 * Prepare the sql query array for this filter and return it as array
 	 * @return array
@@ -53,82 +39,80 @@ class RatingsSorting extends \PCT\CustomElements\Filter
 	 */	
 	public function getQueryOptionCallback()
 	{
-		$varValue = array_filter($this->getValue() ?: array(),'strlen');
+		$arrValues = array_filter($this->getValue()) ?: array();
 		
-		if(empty($varValue))
+		if(empty($arrValues))
 		{
 			return array();
 		}
 		
-		// single values
-		if($this->get('mode') != 'between' && is_array($varValue))
+		$arrIds = array();
+		$arrOptions = array();
+		foreach($arrValues as $k)
 		{
-			$varValue = implode('', $varValue);
+			$sorting = 'asc';
+			$field = $k;
+			
+			$blnPreg = preg_match("/(.*)\[(.*)\]/", $k, $arrMatch);
+			if($blnPreg)
+			{
+				$field = $arrMatch[1];
+				$sorting = $arrMatch[2];
+			}
+				
+			// mysql has no natural order for numeric values, so we multiply 
+			if($this->get('type') == 'sorting_numeric')
+			{
+				$field .= "+0"; 
+			}
+			
+			$options['order'] = RatingsModel::getTable().'.'.$field.' '.strtoupper($sorting);
+			
+			// find matching rating records ordered
+			$objRatings = RatingsModel::findPublishedBySourceAndAttributeAndCustom($this->getTable(),$this->get('attr_id'),'',$options);
+			
+			// collect ids in order
+			if($objRatings !== null)
+			{
+				foreach($objRatings as $objRating)
+				{
+					$arrIds[] = $objRating->pid;
+				}
+			}
+			
+			unset($options);
+			unset($sorting);
+			unset($field);
 		}
 		
-		$t = $this->getTable().'.'.$this->getFilterTarget();
-		$where = '';
-		switch($this->get('mode'))
+		if(!empty($arrIds))
 		{
-			case 'ht': default:
-				$where = $t.'>'.$varValue;
-				break;
-			case 'hte':
-				$where = $t.'>='.$varValue;
-				break;
-			case 'lte':
-				$where = $t.'<='.$varValue;
-				break;
-			case 'lt':
-				$where = $t.'<'.$varValue;
-				break;
-			case 'between':
-				if(strlen($varValue[0]) < 1) {$varValue[0] = $this->get('min_value');}
-				if(strlen($varValue[1]) < 1) {$varValue[1] = $this->get('max_value');}
-				$where = $t.' BETWEEN '.$varValue[0].' AND '.$varValue[1];
-				break;
+			$arrOptions['order'] = array('FIELD(id,'.implode(',', $arrIds).')');
 		}
 		
-		$options = array
-		(
-			'column'	=> $t,
-			'where'		=> '('.$where.')',
-		);
-		return $options;
+		return $arrOptions;
 	}
-	
 	
 	/**
-	 * Render the filter and return string
-	 * @param string	Name of the attribute
-	 * @param mixed		Active filter values
-	 * @param object	Template object
-	 * @param object	The current filter object
-	 * @return string
+	 * Prepare the options for the widget
+	 * @return array
 	 */
-	public function renderCallback($strName,$varValue,$objTemplate,$objFilter)
+	protected function getSelectOptions()
 	{
-		$objTemplate->name = $strName;
-		$objTemplate->label = $this->get('label') ?:  $this->get('title');
-		
-		$objTemplate->minValue = $objTemplate->actMinValue = $this->get('min_value');
-		$objTemplate->maxValue = $objTemplate->actMaxValue = $this->get('max_value');
-		$objTemplate->stepValue = $this->get('steps_value') ?: 1;
-		
-		// use jquery slider and split the submitted value
-		if($this->get('mode') == 'between')
+		$arrReturn = array();
+		$arrFields = deserialize( $this->get('defaultMulti') );
+		if( empty($arrFields) )
 		{
-			$objTemplate->actMinValue = $varValue[0] ?: $objTemplate->minValue;
-			$objTemplate->actMaxValue = $varValue[1] ?: $objTemplate->maxValue;
-			$objTemplate->useJquery = true;
-		}
-		else
-		{
-			$varValue = $varValue[0];
+			$arrFields = array('rating','tstamp','helpful','not_helpful');
 		}
 		
-		$objTemplate->value = $varValue;
-			
-		return $objTemplate->parse();
+		foreach($arrFields as $f)
+		{
+			$arrReturn[$f.'[asc]'] 	= $GLOBALS['TL_LANG']['MSC']['ratings_filter'][$f]['asc'];
+			$arrReturn[$f.'[desc]'] = $GLOBALS['TL_LANG']['MSC']['ratings_filter'][$f]['desc'];
+		}
+		
+		return $arrReturn;
 	}
+
 }

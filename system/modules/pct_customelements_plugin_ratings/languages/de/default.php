@@ -39,3 +39,15 @@ $GLOBALS['TL_LANG']['MSC']['ratings_helpful'] = '%s Personen fanden diese Inform
 $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] = '%s Person fand diese Information hilfreich';
 $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful'] = '%s Personen fanden diese Information nicht hilfreich';
 $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_single'] = '%s Person fand diese Information nicht hilfreich';
+
+/**
+ * Filter labels
+ */
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['tstamp']['asc'] 		= 'Datum [aufsteigend]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['tstamp']['desc'] 		= 'Datum [absteigen]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['rating']['asc'] 		= 'Bewertung [aufsteigend]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['rating']['desc'] 	= 'Bewertung [absteigen]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['helpful']['asc'] 		= 'Nützlich [aufsteigend]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['helpful']['desc'] 	= 'Nützlich [absteigen]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['not_helpful']['asc'] 	= 'Nicht nützlich [aufsteigend]';
+$GLOBALS['TL_LANG']['MSC']['ratings_filter']['not_helpful']['desc']	= 'Nicht nützlich [absteigen]';

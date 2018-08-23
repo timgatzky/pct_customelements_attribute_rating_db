@@ -29,3 +29,10 @@ $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['range_mode']['hte'] 	= 'Grö
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['range_mode']['lt'] 		= 'Kleiner [<]';
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['range_mode']['lte'] 	= 'Kleiner-gleich [<=]';
 $GLOBALS['TL_LANG']['tl_pct_customelement_filter']['range_mode']['between'] = 'Dazwischen';
+
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'][0] = 'Sortierfelder';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting'][1] = 'Wählen Sie die angezeigten Sortierfelder';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['tstamp'] = 'Datum (absteigend und aufsteigend) [tstamp]';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['rating'] = 'Bewertung (absteigend und aufsteigend) [rating]';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['helpful'] = 'Nützlich (absteigend und aufsteigend) [helpful]';
+$GLOBALS['TL_LANG']['tl_pct_customelement_filter']['defaultMulti']['ratings_sorting']['not_helpful'] = 'Nicht nützlich (absteigend und aufsteigend) [not_helpful]';

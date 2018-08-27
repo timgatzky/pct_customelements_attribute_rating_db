@@ -40,7 +40,7 @@ class RatingsModel extends \Model
 	 *
 	 * @return \Model\Collection|null
 	 */
-	public static function findPublishedBySourceAndPidAndAttribute($strSource, $intPid, $intAttribute, array $arrOptions=array())
+	public static function findPublishedBySourceAndPidAndAttribute($strSource, $intPid, $intAttribute, $arrOptions=array())
 	{
 		$t = static::$strTable;
 		$arrColumns = array("$t.pid=? AND $t.source=? AND $t.attr_id=? AND $t.published=1");
@@ -64,7 +64,7 @@ class RatingsModel extends \Model
 	 *
 	 * @return \Model\Collection|null
 	 */
-	public static function findPublishedBySourceAndAttributeAndCustom($strSource, $intAttribute, $strCustom='', array $arrOptions=array())
+	public static function findPublishedBySourceAndAttributeAndCustom($strSource, $intAttribute, $strCustom='', $arrOptions=array())
 	{
 		$t = static::$strTable;
 		$arrColumns = array("$t.source=? AND $t.attr_id=? AND $t.published=1".(strlen($strCustom) > 0 ? ' AND '.$strCustom : '') );

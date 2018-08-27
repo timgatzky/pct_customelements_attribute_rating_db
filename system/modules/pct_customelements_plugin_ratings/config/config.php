@@ -45,6 +45,7 @@ if($blnInstallTool == false && count(\Session::getInstance()->getData()) > 0)
  * Globals
  */
 $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlPaginationParameter'] = 'page_r';
+$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlRatingFilterParameter'] = 'rating_%s';
 
 
 /**

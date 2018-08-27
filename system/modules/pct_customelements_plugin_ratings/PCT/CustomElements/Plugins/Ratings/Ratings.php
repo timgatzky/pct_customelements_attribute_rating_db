@@ -150,6 +150,11 @@ class Ratings
 			return '';
 		}
 		
+		if( empty($strTemplate) )
+		{
+			$strTemplate = 'rating_default';
+		}
+		
 		// @var object Comments
 		$objComments = new \Comments();
 		
@@ -228,18 +233,20 @@ class Ratings
 	 * @param integer	The entry ID
 	 * @param integer	The attribute ID
 	 * @param object	Optional config array
+	 * @param array		Optional SQL array
 	 */
-	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfigComments=null)
+	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfigComments=null,$arrOptions=array())
 	{
 		// find ratings records for the current entry
-		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
+		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute,$arrOptions);
 		if($objRatings === null)
 		{
 			return;
 		}
-		
 		// render the ratings
-		$objTemplate->ratings = $this->renderRatings($objRatings,$objConfig->template,$objConfigComments);
+		$objTemplate->ratings = $this->renderRatings($objRatings,$objTemplate->rating_template ?: '',$objConfigComments);
+		// pass the records
+		$objTemplate->RatingsModel = $objRatings;
 		// total
 		$objTemplate->total = RatingsModel::countBy(array('source=? AND pid=? AND attr_id=?'),array($strSource,$intPid,$intAttribute));
 		// average

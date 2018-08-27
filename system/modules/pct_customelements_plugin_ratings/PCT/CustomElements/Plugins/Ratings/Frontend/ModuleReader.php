@@ -222,8 +222,13 @@ class ModuleReader extends \Module
 			$arrOptions['order'] = $this->customcatalog_sqlSorting;
 		}
 		
-		// find ratings records for the current entry
-		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($objCC->getTable(),$objEntry->id,$objAttribute->id,$arrOptions);
+		
+		$varGet = sprintf($GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlRatingFilterParameter'],$this->id);
+		// allow filtering
+		if( \Input::get($varGet) != '' )
+		{
+			$arrOptions['column'] = array('rating='.\Input::get($varGet));
+		}
 		
 		// Comments
 		$objConfig = new \StdClass;
@@ -235,8 +240,11 @@ class ModuleReader extends \Module
 		$objConfig->bbcode = $this->com_bbcode;
 		$objConfig->moderate = $this->com_moderate;
 		
+		$this->Template->rating_template = $this->customcatalog_template;
+		
 		// prepare the rating records
-		$this->Template->ratings = Ratings::renderRatings($objRatings,$this->customcatalog_template,$objConfig);
+		$objRatings = new Ratings();
+		$objRatings->addRatingsToTemplate($this->Template,$objCC->getTable(),$objEntry->id,$objAttribute->id,$objConfig,$arrOptions);
 		
 		$arrCssID = deserialize($this->cssID);
 		$arrClasses = explode(' ', $arrCssID[1]);

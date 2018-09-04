@@ -19,9 +19,7 @@
     <?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
 	</div>
 	<?php endif; ?>
-	<?php 
-	\Debug::log($this->isPersonal);
-	?>
+	
 	<!-- helpful, not helpful buttons -->
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">

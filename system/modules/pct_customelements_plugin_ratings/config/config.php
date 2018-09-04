@@ -46,7 +46,10 @@ if($blnInstallTool == false && count(\Session::getInstance()->getData()) > 0)
  */
 $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlPaginationParameter'] = 'page_r';
 $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['urlRatingFilterParameter'] = 'rating_%s';
-
+if(!isset($GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember']))
+{
+	$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'] = 1; // define the number of ratings per member allowed
+}
 
 /**
  * Register the plugin

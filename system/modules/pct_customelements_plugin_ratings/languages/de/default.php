@@ -39,6 +39,7 @@ $GLOBALS['TL_LANG']['MSC']['ratings_helpful'] = '%s Personen fanden diese Inform
 $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] = '%s Person fand diese Information hilfreich';
 $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful'] = '%s Personen fanden diese Information nicht hilfreich';
 $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_single'] = '%s Person fand diese Information nicht hilfreich';
+$GLOBALS['TL_LANG']['MSC']['ratings_delete_label'] = 'Löschen';
 
 /**
  * Filter labels

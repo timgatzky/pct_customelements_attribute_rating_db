@@ -52,6 +52,7 @@ class Ratings
 		$strTable = $objAttribute->getOrigin()->get('table');
 		$intAttribute = $objAttribute->get('id');
 		$intRating = 0;
+		$objConfig = null;
 		
 		// add new rating via comments
 		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
@@ -88,6 +89,7 @@ class Ratings
 			$objConfig->disableCaptcha = $objAttribute->get('com_disableCaptcha');
 			$objConfig->bbcode = $objAttribute->get('com_bbcode');
 			$objConfig->moderate = $objAttribute->get('com_moderate');
+			
 			
 			$objComments->addCommentsToTemplate($objTemplate, $objConfig, $strSource, $intPid, $arrNotifies);
 		}
@@ -129,7 +131,7 @@ class Ratings
 		}
 		
 		// add ratings to template
-		$this->addRatingsToTemplate($objTemplate,$strTable,$intPid,$intAttribute);
+		$this->addRatingsToTemplate($objTemplate,$strTable,$intPid,$intAttribute,$objConfig);
 		
 		// return empty to bypass the hook return value
 		return '';
@@ -165,10 +167,12 @@ class Ratings
 			$objTemplate = new \FrontendTemplate( $strTemplate );
 			$objTemplate->Rating = $objRating;
 			$objTemplate->rating = $objRating->rating;
-			$objTemplate->attr_id = $objRatings->attr_id;
-			$objTemplate->source = $objRatings->source;
-			$objTemplate->pid = $objRatings->pid;
-
+			$objTemplate->attr_id = $objRating->attr_id;
+			$objTemplate->source = $objRating->source;
+			$objTemplate->pid = $objRating->pid;
+			$objTemplate->ratingLimitExceeded = false;
+			$objTemplate->isPersonal = false;
+			
 			if($objRating->helpful > 0)
 			{
 				$objTemplate->helpful = sprintf(($objRating->helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_helpful']),$objRating->helpful);
@@ -197,11 +201,37 @@ class Ratings
 				$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$objRating->source.'_'.$objRating->attr_id,$objRating->pid,$GLOBALS['TL_ADMIN_EMAIL']);
 			}
 			
+			// member access
+			if($objRating->member > 0)
+			{
+				$intMember = $objRating->member;
+				if(FE_USER_LOGGED_IN === true)
+				{
+					$objMember = \FrontendUser::getInstance();
+					$intMember = $objMember->id;
+					
+					// check if rating belongs to current member
+					if($intMember == $objRating->member)
+					{
+						$objTemplate->isPersonal = true;
+					}
+					
+				}
+				// count number of ratings
+				$objCount =  \Database::getInstance()->prepare("SELECT COUNT(*) as count FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? and member=?")->limit(1)->execute($objRating->source,$objRating->pid,$objRating->attr_id,$intMember);
+				if((int)$objCount->count >= $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'])
+				{
+					$objTemplate->ratingLimitExceeded = true;
+				}
+				$objTemplate->ratingsPerMember = $objCount->count;
+			}
+			
 			// helpful voting form
 			$formID = 'form_ratings_helpful_'.$objRating->id;
 			$objTemplate->formID = $formID;
 			$objTemplate->helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_helpful_label'];
 			$objTemplate->not_helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_label'];
+			$objTemplate->delete_label = $GLOBALS['TL_LANG']['MSC']['ratings_delete_label'];
 			// voting form submitted
 			if( \Input::post('FORM_SUBMIT') == $formID )
 			{
@@ -209,14 +239,33 @@ class Ratings
 				if( \Input::post('helpful') != '' )
 				{
 					$objRating->__set('helpful',$objRating->helpful + 1);
+					// update the record
+					$objRating->save();
 				}
 				// voted not helpful
 				else if( \Input::post('not_helpful') != '' )
 				{
 					$objRating->__set('not_helpful',$objRating->not_helpful + 1);
+					// update the record
+					$objRating->save();
 				}
-				// update the record
-				$objRating->save();
+				// delete record
+				else if( \Input::post('delete') != '' )
+				{
+					// delete related comments
+					if($objRating->comment)
+					{
+						$objComment = \CommentsModel::findByPk($objRating->comment);
+						if($objComment !== null)
+						{
+							$objComment->delete();
+						}
+					}
+					
+					// delete record
+					$objRating->delete();
+				}
+				
 			}
 			
 			$arrReturn[] = $objTemplate->parse();
@@ -251,6 +300,8 @@ class Ratings
 		$objTemplate->total = RatingsModel::countBy(array('source=? AND pid=? AND attr_id=?'),array($strSource,$intPid,$intAttribute));
 		// average
 		$objTemplate->average = RatingsModel::averageRatingBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
+		// comments config
+		$objTemplate->commentsConfig = $objConfigComments;
 	}
 	
 	

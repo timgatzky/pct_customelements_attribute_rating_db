@@ -39,7 +39,7 @@ jQuery(document).ready(function()
 	});
 
 	// bind an ajax request to the field
-	<?php if($this->votingIsAllowed): ?>
+	<?php if($this->votingIsAllowed && !$this->ratingLimitExceeded): ?>
 	jQuery('#<?php echo $this->selector; ?>').bind('rated reset',function(event)
 	{
 		var elem = jQuery(this);
@@ -89,21 +89,22 @@ jQuery(document).ready(function()
 		data-rateit-min="<?php echo $this->min_value; ?>"
 		data-rateit-max="<?php echo $this->max_value; ?>"
 		data-rateit-step="<?php echo $steps; ?>"
-		<?php if(!$this->votingIsAllowed): ?>
+		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded): ?>
 		data-rateit-readonly="true"
 		data-rateit-ispreset="true"
 		<?php endif; ?>
 	>
 	</div>
-
-	<!-- comments -->
-	<?php if ($this->allowComment): ?>
-    <div class="ce_comments block">
-      <<?php echo $this->hlc ?>><?php echo $this->addComment ?></<?php echo $this->hlc ?>>
-      <?php echo implode('', $this->comments) ?>
-      <?= $this->pagination ?>
-      <?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
-    </div>
-  <?php endif; ?>
-
+	
+	<!-- include ratings -->
+	<?php if ($this->votingIsAllowed && !$this->ratingLimitExceeded): ?>
+    <?php 
+	    
+	$objRatings = new \PCT\CustomElements\Plugins\Ratings;
+	$objRatings->addRatingsToTemplate($this,$this->source,$this->activeRecord->id,$this->id,$this->commentsConfig);   
+	echo $this->ratings;
+	?>
+    <?php endif; ?>
+      <?php #include $this->getTemplate('form_comment_ratings', 'html5'); ?>
+   
 </div>

@@ -12,21 +12,27 @@
 		<?php endif; ?>
 	</div>
 	
-	<?php if($this->allowComments): ?>
+	<?php if($this->allowComments && !$this->ratingLimitExceeded): ?>
 	<div class="ce_comments comments">
 	<?= implode('',$this->comments); ?>
 	<?= $this->pagination ?>
-    <?php include $this->getTemplate('mod_comment_form', 'html5'); ?>
+    <?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
 	</div>
 	<?php endif; ?>
-	
+	<?php 
+	\Debug::log($this->isPersonal);
+	?>
+	<!-- helpful, not helpful buttons -->
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
 		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 		<div class="button_container">
 			<button name="helpful" class="button helpful" value="1"><?= $this->helpful_label; ?></button>
 			<button name="not_helpful" class="button helpful" value="1"><?= $this->not_helpful_label; ?></button>
+			<?php if($this->isPersonal): ?>
+			<button name="delete" class="button delete" value="1"><?= $this->delete_label; ?></button>
+			<?php endif; ?>
 		</div>
 	</form>
-
+	
 </div>

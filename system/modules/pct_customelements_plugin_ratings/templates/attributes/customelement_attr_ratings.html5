@@ -39,7 +39,7 @@ jQuery(document).ready(function()
 	});
 
 	// bind an ajax request to the field
-	<?php if($this->votingIsAllowed && !$this->ratingLimitExceeded): ?>
+	<?php if($this->votingIsAllowed && !$this->ratingLimitExceeded && FE_USER_LOGGED_IN === true): ?>
 	jQuery('#<?php echo $this->selector; ?>').bind('rated reset',function(event)
 	{
 		var elem = jQuery(this);
@@ -89,7 +89,7 @@ jQuery(document).ready(function()
 		data-rateit-min="<?= $this->min_value; ?>"
 		data-rateit-max="<?= $this->max_value; ?>"
 		data-rateit-step="<?= $steps; ?>"
-		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded): ?>
+		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded || FE_USER_LOGGED_IN !== true): ?>
 		data-rateit-readonly="true"
 		data-rateit-ispreset="true"
 		<?php endif; ?>

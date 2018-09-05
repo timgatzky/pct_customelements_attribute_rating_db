@@ -201,24 +201,22 @@ class Ratings
 			}
 			
 			// member access
-			if($objRating->member > 0)
+			if($objRating->member > 0 && FE_USER_LOGGED_IN === true)
 			{
-				$intMember = $objRating->member;
-				if(FE_USER_LOGGED_IN === true)
+				$objMember = \FrontendUser::getInstance();
+				if(!$objMember->id)
 				{
-					$objMember = \FrontendUser::getInstance();
-					$intMember = $objMember->id;
+					$objMember->authenticate();
+				}
 					
-					// check if rating belongs to current member
-					if($intMember == $objRating->member)
-					{
-						$objTemplate->isPersonal = true;
-					}
-					
+				// check if rating belongs to current member
+				if($objMember->id == $objRating->member)
+				{
+					$objTemplate->isPersonal = true;
 				}
 				
 				// count number of ratings
-				$intCount = RatingsModel::countBySourceAndPidAndAttributeAndMember($objRating->source,$objRating->pid,$objRating->attr_id,$intMember);
+				$intCount = RatingsModel::countBySourceAndPidAndAttributeAndMember($objRating->source,$objRating->pid,$objRating->attr_id,$objMember->id);
 				if($intCount >= $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'])
 				{
 					$objTemplate->ratingLimitExceeded = true;

@@ -35,7 +35,6 @@ jQuery(document).ready(function()
 		min: <?php echo $this->min_value; ?>,
 		max: <?php echo $this->max_value; ?>,
 		step: <?php echo $steps; ?>,
-		//backingfld: '#<?php echo $this->selector; ?>'
 	});
 
 	// bind an ajax request to the field
@@ -97,12 +96,10 @@ jQuery(document).ready(function()
 	</div>
 	
 	<!-- include ratings -->
-	<?php if ($this->votingIsAllowed && !$this->ratingLimitExceeded): ?>
-    <?php 
+	<?php 
 	$objRatings = new \PCT\CustomElements\Plugins\Ratings;
 	$objRatings->addRatingsToTemplate($this,$this->source,$this->activeRecord->id,$this->id,$this->commentsConfig);   
 	echo $this->ratings;
 	?>
-    <?php endif; ?>
     
 </div>

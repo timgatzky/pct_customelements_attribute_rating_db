@@ -1,7 +1,7 @@
 
-
 <div class="rating_default block">
 	<div class="rating value_<?= $this->rating; ?>"><?= $this->rating; ?></div>
+	<?php if($this->total > 0): ?>
 	<div class="info">
 		<p><span class="author">Von: <?= $this->author ?></span><span class="time"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time></span></p>
 		<?php if($this->helpful): ?>
@@ -11,6 +11,7 @@
 		<p><span class="not_helpful"><?= $this->not_helpful; ?></span></p>
 		<?php endif; ?>
 	</div>
+	<?php endif; ?>
 	
 	<?php if($this->allowComments): ?>
 	<div class="ce_comments comments">
@@ -24,13 +25,15 @@
 	<?php endif; ?>
 	
 	<!-- helpful, not helpful buttons -->
-	<?php if(FE_USER_LOGGED_IN === true): ?>
+	<?php if($this->total > 0 && FE_USER_LOGGED_IN === true): ?>
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
 		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 		<div class="button_container">
+			<?php if(!$this->isPersonal): ?>
 			<button name="helpful" class="button helpful" value="1"><?= $this->helpful_label; ?></button>
 			<button name="not_helpful" class="button helpful" value="1"><?= $this->not_helpful_label; ?></button>
+			<?php endif; ?>
 			<?php if($this->isPersonal): ?>
 			<button name="delete" class="button delete" value="1"><?= $this->delete_label; ?></button>
 			<?php endif; ?>

@@ -146,11 +146,6 @@ class Ratings
 	 */
 	public static function renderRatings($objRatings,$strTemplate='rating_default',$objConfigComments=null)
 	{
-		if( empty($objRatings) )
-		{
-			return '';
-		}
-		
 		if( empty($strTemplate) )
 		{
 			$strTemplate = 'rating_default';
@@ -161,8 +156,14 @@ class Ratings
 		
 		$arrReturn = array();
 		
+		$intTotal = null;
 		foreach($objRatings as $objRating)
 		{
+			if($intTotal === null)
+			{
+				$intTotal = RatingsModel::countBy(array('source=? AND pid=? AND attr_id=?'),array($objRating->source,$objRating->pid,$objRating->attr_id));
+			}
+			
 			$objTemplate = new \FrontendTemplate( $strTemplate );
 			$objTemplate->Rating = $objRating;
 			$objTemplate->rating = $objRating->rating;
@@ -171,6 +172,7 @@ class Ratings
 			$objTemplate->pid = $objRating->pid;
 			$objTemplate->ratingLimitExceeded = false;
 			$objTemplate->isPersonal = false;
+			$objTemplate->total = $intTotal;
 			
 			if($objRating->helpful > 0)
 			{
@@ -190,7 +192,7 @@ class Ratings
 			}
 			
 			// comments
-			if($objRating->comment > 0)
+			if($objRating->comment > 0 || $objRating->allowComment === true)
 			{
 				if( $objConfigComments === null)
 				{
@@ -286,10 +288,25 @@ class Ratings
 	{
 		// find ratings records for the current entry
 		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute,$arrOptions);
+		
+		// create a psydo rating record incase there are non yet
 		if($objRatings === null)
 		{
-			return;
+			$tmp = array(0 => array
+			(
+				'source' => $strSource,
+				'pid'	=> $intPid,
+				'attr_id' => $intAttribute,
+			));
+			
+			if($objConfigComments !== null)
+			{
+				$tmp[0]['allowComment'] = true;
+			}
+			
+			$objRatings = json_decode (json_encode ($tmp), FALSE);
 		}
+		
 		// render the ratings
 		$objTemplate->ratings = $this->renderRatings($objRatings,$objTemplate->rating_template ?: '',$objConfigComments);
 		// pass the records

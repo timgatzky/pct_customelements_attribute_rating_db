@@ -80,15 +80,15 @@ jQuery(document).ready(function()
 <div class="widget rateit_container">
 	
 	<div class="total"><?= $this->total; ?></div>
-	<div class="average"><?= $this->average; ?></div>
+	<div class="average"><?= number_format($this->average,1); ?></div>
 	
-	<div class="rating-big"><?php echo $this->average; ?>/<?php echo $this->max_value; ?></div>
+	<div class="rating-big"><?= number_format($this->average,1); ?>/<?php echo $this->max_value; ?></div>
 	<div id="<?php echo $this->selector; ?>" class="rateit"
-		data-attr_id="<?php echo $this->id; ?>"
-		data-rateit-value="<?php echo $this->average; ?>"
-		data-rateit-min="<?php echo $this->min_value; ?>"
-		data-rateit-max="<?php echo $this->max_value; ?>"
-		data-rateit-step="<?php echo $steps; ?>"
+		data-attr_id="<?= $this->id; ?>"
+		data-rateit-value="<?= $this->average; ?>"
+		data-rateit-min="<?= $this->min_value; ?>"
+		data-rateit-max="<?= $this->max_value; ?>"
+		data-rateit-step="<?= $steps; ?>"
 		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded): ?>
 		data-rateit-readonly="true"
 		data-rateit-ispreset="true"
@@ -99,12 +99,10 @@ jQuery(document).ready(function()
 	<!-- include ratings -->
 	<?php if ($this->votingIsAllowed && !$this->ratingLimitExceeded): ?>
     <?php 
-	    
 	$objRatings = new \PCT\CustomElements\Plugins\Ratings;
 	$objRatings->addRatingsToTemplate($this,$this->source,$this->activeRecord->id,$this->id,$this->commentsConfig);   
 	echo $this->ratings;
 	?>
     <?php endif; ?>
-      <?php #include $this->getTemplate('form_comment_ratings', 'html5'); ?>
-   
+    
 </div>

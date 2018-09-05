@@ -90,7 +90,6 @@ class Ratings
 			$objConfig->bbcode = $objAttribute->get('com_bbcode');
 			$objConfig->moderate = $objAttribute->get('com_moderate');
 			
-			
 			$objComments->addCommentsToTemplate($objTemplate, $objConfig, $strSource, $intPid, $arrNotifies);
 		}
 		
@@ -217,13 +216,14 @@ class Ratings
 					}
 					
 				}
+				
 				// count number of ratings
-				$objCount =  \Database::getInstance()->prepare("SELECT COUNT(*) as count FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? and member=?")->limit(1)->execute($objRating->source,$objRating->pid,$objRating->attr_id,$intMember);
-				if((int)$objCount->count >= $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'])
+				$intCount = RatingsModel::countBySourceAndPidAndAttributeAndMember($objRating->source,$objRating->pid,$objRating->attr_id,$intMember);
+				if($intCount >= $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'])
 				{
 					$objTemplate->ratingLimitExceeded = true;
 				}
-				$objTemplate->ratingsPerMember = $objCount->count;
+				$objTemplate->ratingsPerMember = $intCount;
 			}
 			
 			// helpful voting form
@@ -302,6 +302,23 @@ class Ratings
 		$objTemplate->average = RatingsModel::averageRatingBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute);
 		// comments config
 		$objTemplate->commentsConfig = $objConfigComments;
+		
+		// count number of ratings for the current member
+		if(FE_USER_LOGGED_IN === true)
+		{
+			$objMember = \FrontendUser::getInstance();
+			if(!$objMember->id)
+			{
+				$objMember->authenticate();
+			}
+			
+			$intCount = RatingsModel::countBySourceAndPidAndAttributeAndMember($strSource,$intPid,$intAttribute,$objMember->id);
+			if($intCount >= $GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'])
+			{
+				$objTemplate->ratingLimitExceeded = true;
+			}
+			$objTemplate->ratingsPerMember = $intCount;
+		}
 	}
 	
 	

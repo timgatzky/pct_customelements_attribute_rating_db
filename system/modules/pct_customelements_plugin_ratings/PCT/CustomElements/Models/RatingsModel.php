@@ -94,4 +94,23 @@ class RatingsModel extends \Model
 		$objResult = \Database::getInstance()->prepare("SELECT AVG(rating) as average FROM $t WHERE $t.pid=? AND $t.source=? AND $t.attr_id=? AND $t.published=1")->limit(1)->execute($intPid,$strSource,$intAttribute);
 		return $objResult->average ?: 0;
 	}
+	
+	
+	/**
+	 * Count ratings by member
+	 * @param string	The source
+	 * @param integer 	The entry ID
+	 * @param integer	The attribute ID
+	 * @param array   	An optional options array
+	 *
+	 * @return number
+	 */
+	public static function countBySourceAndPidAndAttributeAndMember($strSource, $intPid, $intAttribute, $intMember, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("$t.pid=? AND $t.source=? AND $t.attr_id=? AND $t.member=?");
+		$arrValues = array($intPid,$strSource,$intAttribute,$intMember);
+		
+		return static::countBy($arrColumns, $arrValues, $arrOptions);
+	}
 }

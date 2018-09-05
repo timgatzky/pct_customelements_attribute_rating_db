@@ -50,6 +50,11 @@ if(!isset($GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember']))
 {
 	$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['maxRatingsPerMember'] = 1; // define the number of ratings per member allowed
 }
+if(!isset($GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit']))
+{
+	$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit'] = 1; // reload page after form submits like: helpful, not helpful, delete
+}
+
 
 /**
  * Register the plugin

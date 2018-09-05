@@ -96,10 +96,6 @@ jQuery(document).ready(function()
 	</div>
 	
 	<!-- include ratings -->
-	<?php 
-	$objRatings = new \PCT\CustomElements\Plugins\Ratings;
-	$objRatings->addRatingsToTemplate($this,$this->source,$this->activeRecord->id,$this->id,$this->commentsConfig);   
-	echo $this->ratings;
-	?>
+	<?= $this->ratings; ?>
     
 </div>

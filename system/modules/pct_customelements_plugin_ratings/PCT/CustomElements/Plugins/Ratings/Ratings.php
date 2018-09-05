@@ -46,7 +46,7 @@ class Ratings
 		{
 			return '';
 		}
-				
+		
 		$intPid = $objAttribute->getActiveRecord()->id;
 		$strSource = $objAttribute->getOrigin()->get('table').'_'.$objAttribute->get('id');
 		$strTable = $objAttribute->getOrigin()->get('table');
@@ -174,6 +174,11 @@ class Ratings
 			$objTemplate->isPersonal = false;
 			$objTemplate->total = $intTotal;
 			
+			if($intTotal < 1)
+			{
+				$objTemplate->isFirstRating = true;
+			}
+			
 			if($objRating->helpful > 0)
 			{
 				$objTemplate->helpful = sprintf(($objRating->helpful == 1 ? $GLOBALS['TL_LANG']['MSC']['ratings_helpful_single'] : $GLOBALS['TL_LANG']['MSC']['ratings_helpful']),$objRating->helpful);
@@ -198,7 +203,6 @@ class Ratings
 				{
 					$objConfigComments = new \StdClass;
 				}
-				
 				$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$objRating->source.'_'.$objRating->attr_id,$objRating->pid,$GLOBALS['TL_ADMIN_EMAIL']);
 			}
 			
@@ -264,6 +268,12 @@ class Ratings
 					
 					// delete record
 					$objRating->delete();
+					
+					// reload page
+					if((boolean)$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit'] === true)
+					{
+						\Controller::reload();
+					}
 				}
 				
 			}
@@ -362,6 +372,17 @@ class Ratings
 			'attr_id'	=> $intAttribute,
 			'published' => $blnPublished
 		);
+		
+		// asign to user
+		if(FE_USER_LOGGED_IN === true)
+		{
+			$objMember = \FrontendUser::getInstance();
+			if(!$objMember->id)
+			{
+				$objMember->authenticate();
+			}
+			$arrSet['member'] = $objMember->id;
+		}
 		
 		// determine counter
 		$objCounter = \Database::getInstance()->prepare("SELECT * FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? ORDER BY counter DESC")->limit(1)->execute($strSource,$intPid,$intAttribute);

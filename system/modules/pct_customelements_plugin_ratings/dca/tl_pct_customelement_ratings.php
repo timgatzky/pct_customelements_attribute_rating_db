@@ -35,6 +35,10 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		'dataContainer'				  => 'Table',
 		'closed'                      => true,
 		'notCopyable'                 => true,
+		'ondelete_callback'			  => array
+		(
+			array('PCT\CustomElements\Plugins\Ratings\Backend\TableCustomElementRatings','deleteRelatedComment'),
+		),
 		'sql' => array
 		(
 			'keys' => array

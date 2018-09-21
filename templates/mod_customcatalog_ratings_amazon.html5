@@ -1,0 +1,63 @@
+
+<?php 
+// collect ratings by their values
+$arrRatings = array();
+
+$intTotal = 0;
+
+$arrSums = array();
+$arrVotes = array();
+foreach($this->RatingsModel as $objRating)
+{
+	$intTotal += $objRating->rating;
+	$arrSums[ $objRating->rating ] += (isset($arrSums[ $objRating->rating ]) ? $arrSums[ $objRating->rating ] : $objRating->rating);
+	$arrVotes[ $objRating->rating ] += (isset($arrVotes[ $objRating->rating ]) ? 1 : 1);
+}
+
+foreach($this->RatingsModel as $i => $objRating)
+{
+	$percent =  ($arrVotes[ $objRating->rating ] / $this->total) * 100;
+	$objRating->sum = $arrSums[ $objRating->rating ];
+	$objRating->raw_percent = $percent;
+	$objRating->percent = round($percent);
+	$objRating->percent_formatted = number_format((int)round($percent),2);
+	$objRating->total = $arrVotes[ $objRating->rating ];
+	$arrClass = array('rating','value_'.$objRating->rating);
+	($i%2 == 0 ? $arrClass[] = 'even' : $arrClass[] = 'odd');
+	($i == 0 ? $arrClass[] = 'first' : '');
+	($i == count($this->RatingsModel) - 1 ? $arrClass[] = 'last' : '');
+	$objRating->class = implode(' ', $arrClass);
+	$arrRatings[ $objRating->rating ] = $objRating;	
+}
+
+// sort
+ksort($arrRatings);
+?>
+
+
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+	
+	<?php if($this->empty): ?>
+		<p class="empty"><?= $this->empty ?></p>
+	<?php else: ?>
+	
+	<div class="total block"><?= $this->total; ?></div>
+	<div class="average block"><?= $this->average; ?></div>
+	
+	<ul class="ratings_amazon block">
+	<?php foreach($arrRatings as $objRating): ?>	
+	<li class="<?= $objRating->class; ?>">
+		<ul>
+			<li class="rating value"><?= $objRating->rating; ?></li>
+			<li class="percentage" style="width: <?= $objRating->percent; ?>%;"></li>
+			<li class="percent value_<?= $objRating->percent; ?>"><?= $objRating->percent_formatted; ?> %</li>
+			<li class="filter"><a href="{{env::request}}?<?= 'rating_'.$this->id.'='.$objRating->rating; ?>"><?= $objRating->total; ?></a></li>
+		</ul>
+	</li>
+	<?php endforeach; ?>
+	</ul>
+	<?php endif; ?>
+	
+<?php $this->endblock(); ?>

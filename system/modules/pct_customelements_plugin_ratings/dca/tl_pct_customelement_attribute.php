@@ -35,12 +35,6 @@ $objDcaHelper = DcaHelper::getInstance()->setTable('tl_pct_customelement_attribu
 
 
 /**
- * Config
- */
-$GLOBALS['TL_DCA']['tl_pct_customelement_attribute']['config']['onload_callback'][] = array('PCT\CustomElements\Attributes\Tags\TableCustomElementAttribute','setTabletreeOptions');
-
-
-/**
  * Palettes
  */
 $strType = 'rateit';
@@ -54,7 +48,7 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_attribute']['palettes'][$strType] = $ob
 /**
  * Subpalettes
  */
-$objDcaHelper->addSubpalette('allowRatings',array('ratings_notify','ratings_sortOrder','ratings_moderate'));
+$objDcaHelper->addSubpalette('allowRatings',array('ratings_notify','ratings_sortOrder','ratings_moderate','ratings_requireLogin','ratings_template'));
 $objDcaHelper->addSubpalette('allowComments',array('com_notify','com_order','com_perPage','com_moderate','com_bbcode','com_requireLogin','com_disableCaptcha'));
 
 
@@ -122,6 +116,23 @@ $objDcaHelper->addFields(array
 		'inputType'               => 'checkbox',
 		'eval'                    => array('tl_class'=>'clr w50'),
 		'sql'                     => "char(1) NOT NULL default ''"
+	),
+	'ratings_requireLogin' => array
+	(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_requireLogin'],
+		'exclude'                 => true,
+		'inputType'               => 'checkbox',
+		'eval'                    => array('tl_class'=>'w50'),
+		'sql'                     => "char(1) NOT NULL default ''"
+	),
+	'ratings_template' => array
+	(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_template'],
+		'exclude'                 => true,
+		'inputType'               => 'select',
+		'options_callback'		  => array('PCT\CustomElements\Plugins\Ratings\Backend\TableCustomElementAttribute','getRatingsTemplates'),
+		'eval'					  => array('tl_class'=>'clr m12', 'chosen'=>true),
+		'sql'                     => "varchar(128) NOT NULL default ''"
 	),
 	
 	// Comments

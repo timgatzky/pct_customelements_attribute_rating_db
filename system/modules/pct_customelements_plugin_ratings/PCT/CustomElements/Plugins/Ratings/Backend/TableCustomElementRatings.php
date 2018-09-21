@@ -34,21 +34,33 @@ class TableCustomElementRatings extends \Backend
 	
 	
 	/**
-	 * Render the tag list record
+	 * Render the list record
 	 * @param array
 	 * @param string
 	 * @return string
 	 */
 	public function listRecord($arrRow, $strLabel)
 	{
-		if(strlen($arrRow['translations']) > 0)
-		{
-			$arrTranslations = deserialize($arrRow['translations']);
-			$lang = \Input::get('language') ?: \Input::get('lang') ?: $GLOBALS['TL_LANGUAGE'];
-			$strLabel = $arrTranslations[$lang]['label'] ?: $strLabel;
-		}
 		
-		return '<a href="'.$this->addToUrl('node='.$arrRow['id']).'" title="'.$GLOBALS['TL_LANG']['MSC']['selectNode'].'">'.$strLabel.'</a>';
+	}
+	
+	
+	/**
+	 * Delete a reletaed comment
+	 * @param object
+	 * @param integer
+	 * called from ondelete callback
+	 */
+	public function deleteRelatedComment($objDC,$intId)
+	{
+		if( $objDC->activeRecord->comment > 0 && in_array('comments', \Config::getActiveModules() ) )
+		{
+			$objComment = \CommentsModel::findByPk($objDC->activeRecord->comment);
+			if($objComment !== null)
+			{
+				$objComment->delete();
+			}
+		}
 	}
 	
 

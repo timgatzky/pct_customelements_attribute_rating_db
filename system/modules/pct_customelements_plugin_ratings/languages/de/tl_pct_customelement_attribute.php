@@ -36,4 +36,8 @@ $GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_sortOrder']['rati
 $GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_sortOrder']['rating_desc'] 	= 'Bewertung absteigend';
 $GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_perPage'][0] 	= 'Bewertungen pro Seite';
 $GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_perPage'][1] 	= 'Anzahl an Bewertungen pro Seite. Geben Sie 0 ein, um den automatischen Seitenumbruch zu deaktivieren.';
+$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_template'][0] 	= 'Bewertungen-Template';
+$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_template'][1] 	= 'Wählen Sie das Template für die einzelnen Bewertungen';
+$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_requireLogin'][0] 	= 'Login benötigt';
+$GLOBALS['TL_LANG']['tl_pct_customelement_attribute']['ratings_requireLogin'][1] 	= 'Nur angemeldeten Benutzern das Bewerten und Abstimmen erlauben.';
 

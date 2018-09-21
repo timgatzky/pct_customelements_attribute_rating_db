@@ -18,13 +18,13 @@
 	<?= implode('',$this->comments); ?>
 	<?= $this->pagination ?>
     <?php if(!$this->ratingLimitExceeded): ?>
-    <?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
+    <?php include $this->getTemplate('form_comment_ratings_simple', 'html5'); ?>
 	<?php endif; ?>
 	</div>
 	<?php endif; ?>
 	
 	<!-- helpful, not helpful buttons -->
-	<?php if($this->total > 0 && !$this->allowVoting): ?>
+	<?php if($this->total > 0 && $this->allowVoting): ?>
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
 		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">

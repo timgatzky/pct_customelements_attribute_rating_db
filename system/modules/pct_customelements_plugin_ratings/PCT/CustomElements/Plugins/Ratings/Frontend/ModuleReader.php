@@ -239,8 +239,7 @@ class ModuleReader extends \Module
 		$objConfig->disableCaptcha = $this->com_disableCaptcha;
 		$objConfig->bbcode = $this->com_bbcode;
 		$objConfig->moderate = $this->com_moderate;
-		
-		$this->Template->rating_template = $this->customcatalog_template;
+		$this->Template->ratings_template = $this->customcatalog_template;
 		
 		// prepare the rating records
 		$objRatings = new Ratings();

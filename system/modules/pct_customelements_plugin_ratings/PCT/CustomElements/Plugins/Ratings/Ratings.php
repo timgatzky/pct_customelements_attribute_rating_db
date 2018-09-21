@@ -53,6 +53,12 @@ class Ratings
 		$intAttribute = $objAttribute->get('id');
 		$intRating = 0;
 		$objConfig = null;
+		$objTemplate->allowVoting = true;
+		// allow voting
+		if( (boolean)$objAttribute->get('ratings_requireLogin') === true && FE_USER_LOGGED_IN === false)
+		{
+			$objTemplate->allowVoting = false;
+		}
 		
 		// add new rating via comments
 		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
@@ -164,6 +170,9 @@ class Ratings
 				$intTotal = RatingsModel::countBy(array('source=? AND pid=? AND attr_id=?'),array($objRating->source,$objRating->pid,$objRating->attr_id));
 			}
 			
+			// @var object
+			$objAttribute = \PCT\CustomElements\Plugins\CustomCatalog\Core\AttributeFactory::findById( $objRating->attr_id );
+			
 			$objTemplate = new \FrontendTemplate( $strTemplate );
 			$objTemplate->Rating = $objRating;
 			$objTemplate->rating = $objRating->rating;
@@ -173,6 +182,13 @@ class Ratings
 			$objTemplate->ratingLimitExceeded = false;
 			$objTemplate->isPersonal = false;
 			$objTemplate->total = $intTotal;
+			$objTemplate->attribute = $objAttribute;
+			$objTemplate->allowVoting = true;
+			// allow voting
+			if( (boolean)$objAttribute->get('ratings_requireLogin') === true && FE_USER_LOGGED_IN === false)
+			{
+				$objTemplate->allowVoting = false;
+			}
 			
 			if($intTotal < 1)
 			{
@@ -296,6 +312,13 @@ class Ratings
 	 */
 	public function addRatingsToTemplate($objTemplate,$strSource,$intPid,$intAttribute,$objConfigComments=null,$arrOptions=array())
 	{
+		// @var object
+		$objAttribute = \PCT\CustomElements\Plugins\CustomCatalog\Core\AttributeFactory::findById($intAttribute);
+		if($objAttribute === null)
+		{
+			return;
+		}
+		
 		// find ratings records for the current entry
 		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute,$arrOptions);
 		
@@ -317,8 +340,17 @@ class Ratings
 			$objRatings = json_decode (json_encode ($tmp), FALSE);
 		}
 		
+		// set ratings_ template
+		$strTemplate = $objAttribute->ratings_template;
+		// override via Template object
+		if( !empty($objTemplate->ratings_template) )
+		{
+			$strTemplate = $objTemplate->ratings_template;
+		}
+		
+		$objTemplate->attribute = $objAttribute;
 		// render the ratings
-		$objTemplate->ratings = $this->renderRatings($objRatings,$objTemplate->rating_template ?: '',$objConfigComments);
+		$objTemplate->ratings = $this->renderRatings($objRatings,$strTemplate,$objConfigComments);
 		// pass the records
 		$objTemplate->RatingsModel = $objRatings;
 		// total

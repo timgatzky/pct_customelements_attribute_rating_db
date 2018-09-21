@@ -1,9 +1,4 @@
 
-<?php
-/**
- * Custom elements RateIt attribute template
- */
-?>
 
 <?php
 global $objPage;
@@ -38,11 +33,11 @@ jQuery(document).ready(function()
 	});
 
 	// bind an ajax request to the field
-	<?php if($this->votingIsAllowed && !$this->ratingLimitExceeded && FE_USER_LOGGED_IN === true): ?>
+	<?php if($this->votingIsAllowed && !$this->ratingLimitExceeded && $this->allowVoting): ?>
 	jQuery('#<?php echo $this->selector; ?>').bind('rated reset',function(event)
 	{
 		var elem = jQuery(this);
-
+		
 		<?php if ($this->allowComment): ?>
 		jQuery('#<?php echo $this->formId; ?> input[name="value"]').val(elem.rateit('value'));
 		<?php else: ?>
@@ -88,7 +83,7 @@ jQuery(document).ready(function()
 		data-rateit-min="<?= $this->min_value; ?>"
 		data-rateit-max="<?= $this->max_value; ?>"
 		data-rateit-step="<?= $steps; ?>"
-		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded || FE_USER_LOGGED_IN !== true): ?>
+		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded || !$this->allowVoting): ?>
 		data-rateit-readonly="true"
 		data-rateit-ispreset="true"
 		<?php endif; ?>

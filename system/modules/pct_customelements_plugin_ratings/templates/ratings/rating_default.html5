@@ -1,9 +1,13 @@
 
 <div class="rating_default block">
 	<div class="rating value_<?= $this->rating; ?>"><?= $this->rating; ?></div>
-	<?php if($this->total > 0): ?>
 	<div class="info">
-		<p><span class="author">Von: <?= $this->author ?></span><span class="time"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time></span></p>
+		<p>
+			<?php if($this->author): ?>
+			<span class="author">Von: <?= $this->author; ?></span>
+			<?php endif; ?>
+			<span class="time"><time datetime="<?= $this->datetime ?>"><?= $this->date ?></time></span>
+		</p>
 		<?php if($this->helpful): ?>
 		<p><span class="helpful"><?= $this->helpful; ?></span></p>
 		<?php endif; ?>
@@ -11,20 +15,21 @@
 		<p><span class="not_helpful"><?= $this->not_helpful; ?></span></p>
 		<?php endif; ?>
 	</div>
+	
+	<?php if($this->hasComment) :?>
+	<!-- comment -->
+		<div class="comment_wrapper">
+		 	<div class="name">Von: <?= $this->Comment->name; ?></div>
+		 	<?php if($this->Comment->website) :?>
+		 	<div class="website"><?= $this->Comment->website; ?></div>
+			<?php endif; ?>
+		 	<div class="comment"><?= $this->Comment->comment; ?></div>
+		</div>
 	<?php endif; ?>
 	
-	<?php if($this->allowComments && $this->allowVoting): ?>
-	<div class="ce_comments comments">
-	<?= implode('',$this->comments); ?>
-	<?= $this->pagination ?>
-    <?php if(!$this->ratingLimitExceeded): ?>
-    <?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
-	<?php endif; ?>
-	</div>
-	<?php endif; ?>
-	
+	<?php if($this->allowVoting): ?>
 	<!-- helpful, not helpful buttons -->
-	<?php if($this->total > 0 && !$this->allowVoting): ?>
+	<div class="form_wrapper">
 	<form id="<?= $this->formID; ?>" class="ce_form helpful" action="{{env::request}}" method="post">
 		<input type="hidden" name="FORM_SUBMIT" value="<?= $this->formID; ?>">
 		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
@@ -38,5 +43,6 @@
 			<?php endif; ?>
 		</div>
 	</form>
+	</div>
 	<?php endif; ?>
 </div>

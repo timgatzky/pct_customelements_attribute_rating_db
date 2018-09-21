@@ -90,7 +90,14 @@ jQuery(document).ready(function()
 	>
 	</div>
 	
-	<!-- include ratings -->
+	<?php if($this->allowComment): ?>
+	<div class="rating_form">
+	<?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
+	</div>
+	<?php endif; ?>
+	
+	<div class="ratings_wrapper">
 	<?= $this->ratings; ?>
+	</div>
     
 </div>

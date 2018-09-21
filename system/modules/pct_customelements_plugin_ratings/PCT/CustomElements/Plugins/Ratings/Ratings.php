@@ -60,43 +60,44 @@ class Ratings
 			$objTemplate->allowVoting = false;
 		}
 		
-		// add new rating via comments
+		// create Comments config
 		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
 		{
-			// Adjust the comments headline level
-			$objTemplate->hlc = 'h4';
-			$objTemplate->allowComment = true;
-			$objTemplate->source = $strTable;
-			$objTemplate->attr_id = $objAttribute->get('id');
-			$objTemplate->pid = $intPid;
-			
-			// @var object
-			$objComments = new \Contao\Comments();
-			
-			// Notifies
-			$arrNotifies = array();
-			
-			// Notify admin
-			if($objAttribute->get('com_notify') == 'notify_admin')
-			{
-				$arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
-			}
-			
-			// Notify a different person
-			if(strlen($objAttribute->get('com_notify')) > 0 && $objAttribute->get('com_notify') != 'notify_admin')
-			{
-				$arrNotifies = array($objAttribute->get('com_notify'));
-			}
+		   // Adjust the comments headline level
+		   $objTemplate->hlc = 'h4';
+		   $objTemplate->allowComment = true;
+		   $objTemplate->source = $strTable;
+		   $objTemplate->attr_id = $objAttribute->get('id');
+		   $objTemplate->pid = $intPid;
+		   
+		   // @var object
+		   $objComments = new \Contao\Comments();
+		   
+		   // Notifies
+		   $arrNotifies = array();
+		   
+		   // Notify admin
+		   if($objAttribute->get('com_notify') == 'notify_admin')
+		   {
+		   	$arrNotifies[] = $GLOBALS['TL_ADMIN_EMAIL'];
+		   }
+		   
+		   // Notify a different person
+		   if(strlen($objAttribute->get('com_notify')) > 0 && $objAttribute->get('com_notify') != 'notify_admin')
+		   {
+		   	$arrNotifies = array($objAttribute->get('com_notify'));
+		   }
 		
-			$objConfig = new \StdClass();
-			$objConfig->perPage = $objAttribute->get('com_perPage');
-			$objConfig->order = $objAttribute->get('com_sortOrder');
-			$objConfig->requireLogin = $objAttribute->get('com_requireLogin');
-			$objConfig->disableCaptcha = $objAttribute->get('com_disableCaptcha');
-			$objConfig->bbcode = $objAttribute->get('com_bbcode');
-			$objConfig->moderate = $objAttribute->get('com_moderate');
-			
-			$objComments->addCommentsToTemplate($objTemplate, $objConfig, $strSource, $intPid, $arrNotifies);
+		   $objConfig = new \StdClass();
+		   $objConfig->perPage = $objAttribute->get('com_perPage');
+		   $objConfig->order = $objAttribute->get('com_sortOrder');
+		   $objConfig->requireLogin = $objAttribute->get('com_requireLogin');
+		   $objConfig->disableCaptcha = $objAttribute->get('com_disableCaptcha');
+		   $objConfig->bbcode = $objAttribute->get('com_bbcode');
+		   $objConfig->moderate = $objAttribute->get('com_moderate');
+		   $objConfig->notifies = $arrNotifies;
+		   
+		   $objComments->addCommentsToTemplate($objTemplate, $objConfig, $strSource, $intPid, $arrNotifies);
 		}
 		
 		// add new rating via ajax
@@ -163,7 +164,7 @@ class Ratings
 		$arrReturn = array();
 		
 		$intTotal = null;
-		foreach($objRatings as $objRating)
+		foreach($objRatings as $i => $objRating)
 		{
 			if($intTotal === null)
 			{
@@ -179,6 +180,7 @@ class Ratings
 			$objTemplate->attr_id = $objRating->attr_id;
 			$objTemplate->source = $objRating->source;
 			$objTemplate->pid = $objRating->pid;
+			$objTemplate->num_rating = $i;
 			$objTemplate->ratingLimitExceeded = false;
 			$objTemplate->isPersonal = false;
 			$objTemplate->total = $intTotal;
@@ -193,6 +195,11 @@ class Ratings
 			if($intTotal < 1)
 			{
 				$objTemplate->isFirstRating = true;
+			}
+			
+			if($i == 0)
+			{
+				$objTemplate->isFirst = true;
 			}
 			
 			if($objRating->helpful > 0)
@@ -213,13 +220,20 @@ class Ratings
 			}
 			
 			// comments
-			if($objRating->comment > 0 || $objRating->allowComment === true)
+			if($objRating->comment > 0)
 			{
+				$objTemplate->hasComment = true;
 				if( $objConfigComments === null)
 				{
 					$objConfigComments = new \StdClass;
 				}
-				$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$objRating->source.'_'.$objRating->attr_id,$objRating->pid,$GLOBALS['TL_ADMIN_EMAIL']);
+				
+				#$source = $objRating->source.'_'.$objRating->attr_id.'_'.($objRating->id ?: 0).'_'.$i;
+				#$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$source,$objRating->pid,$objConfigComments->notifies);
+				
+				// @var object
+				$objComment = \CommentsModel::findByPk($objRating->comment);
+				$objTemplate->Comment = $objComment;
 			}
 			
 			// member access
@@ -284,14 +298,13 @@ class Ratings
 					
 					// delete record
 					$objRating->delete();
-					
-					// reload page
-					if((boolean)$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit'] === true)
-					{
-						\Controller::reload();
-					}
 				}
-				
+					
+				// reload page to flush post
+				if((boolean)$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit'] === true)
+				{
+					\Controller::reload();
+				}
 			}
 			
 			$arrReturn[] = $objTemplate->parse();
@@ -321,24 +334,28 @@ class Ratings
 		
 		// find ratings records for the current entry
 		$objRatings = RatingsModel::findPublishedBySourceAndPidAndAttribute($strSource,$intPid,$intAttribute,$arrOptions);
-		
-		// create a psydo rating record incase there are non yet
 		if($objRatings === null)
 		{
-			$tmp = array(0 => array
-			(
-				'source' => $strSource,
-				'pid'	=> $intPid,
-				'attr_id' => $intAttribute,
-			));
-			
-			if($objConfigComments !== null)
-			{
-				$tmp[0]['allowComment'] = true;
-			}
-			
-			$objRatings = json_decode (json_encode ($tmp), FALSE);
+			return;
 		}
+	
+		#// create a psydo rating record incase there are non yet
+		#if($objRatings === null)
+		#{
+		#	$tmp = array(0 => array
+		#	(
+		#		'source' => $strSource,
+		#		'pid'	=> $intPid,
+		#		'attr_id' => $intAttribute,
+		#	));
+		#	
+		#	if($objConfigComments !== null)
+		#	{
+		#		$tmp[0]['allowComment'] = true;
+		#	}
+		#	
+		#	$objRatings = json_decode (json_encode ($tmp), FALSE);
+		#}
 		
 		// set ratings_ template
 		$strTemplate = $objAttribute->ratings_template;

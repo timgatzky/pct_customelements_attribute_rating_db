@@ -4,7 +4,7 @@
 <?php $this->block('content'); ?>
 	
 	<?php if($this->empty): ?>
-		<p class="empty"><?= $this->empty ?></p>
+	<p class="empty"><?= $this->empty ?></p>
 	<?php else: ?>
 	<div class="ratings block">
 	<?= $this->ratings; ?>

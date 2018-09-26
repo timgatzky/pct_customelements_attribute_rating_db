@@ -41,6 +41,10 @@
           <div class="widget">
             <?= $this->fields['notify']->generateWithError() ?>
           </div>
+          <div class="widget privacy">
+            <input required type="checkbox" id="opt_ratings_privacy_<?= $this->attr_id; ?>" name="privacy" class="checkbox mandatory" value="1">
+            <label for="opt_ratings_privacy_<?= $this->attr_id; ?>">{{iflng::de}}Datenschutz{{iflng}}{{iflng::en}}Privacy{{iflng}}<span class="mandatory">*</span></label>
+          </div>
           <div class="submit_container">
             <input type="submit" class="submit" value="<?= $this->submit ?>">
           </div>

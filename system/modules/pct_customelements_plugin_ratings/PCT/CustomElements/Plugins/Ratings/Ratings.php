@@ -180,12 +180,16 @@ class Ratings
 			$objTemplate->attr_id = $objRating->attr_id;
 			$objTemplate->source = $objRating->source;
 			$objTemplate->pid = $objRating->pid;
+			$objTemplate->tstamp = $objRating->tstamp;
+			$objTemplate->datetime = \System::parseDate( \Config::get('datimFormat'), $objRating->tstamp );
+			$objTemplate->date = \System::parseDate( \Config::get('dateFormat'), $objRating->tstamp );
 			$objTemplate->num_rating = $i;
 			$objTemplate->ratingLimitExceeded = false;
 			$objTemplate->isPersonal = false;
 			$objTemplate->total = $intTotal;
 			$objTemplate->attribute = $objAttribute;
 			$objTemplate->allowVoting = true;
+			
 			// allow voting
 			if( (boolean)$objAttribute->get('ratings_requireLogin') === true && FE_USER_LOGGED_IN === false)
 			{

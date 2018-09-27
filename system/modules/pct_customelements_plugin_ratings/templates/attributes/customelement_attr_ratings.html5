@@ -65,7 +65,7 @@ jQuery(document).ready(function()
 	<?php endif; ?>
 
 	// show value as number on hover
-	jQuery("#<?php echo $this->selector; ?>").bind('over', function (event,value) { jQuery(this).attr('title', value); });
+	jQuery("#<?php echo $this->selector; ?>").bind('over', function (event,value) { jQuery(this).attr('title', value - 1); });
 });
 
 /* ]]> */

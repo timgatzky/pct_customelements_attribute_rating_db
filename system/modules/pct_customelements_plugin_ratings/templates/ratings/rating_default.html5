@@ -19,9 +19,9 @@
 	<?php if($this->hasComment) :?>
 	<!-- comment -->
 		<div class="comment_wrapper">
-		 	<div class="name">Von: <?= $this->Comment->name; ?></div>
+		 	<div class="name"><?= $this->Comment->name; ?></div>
 		 	<?php if($this->Comment->website) :?>
-		 	<div class="website"><?= $this->Comment->website; ?></div>
+		 	<div class="website"><a href="<?= $this->Comment->website; ?>" rel="nofollow" target="_blank" title="<?= $this->Comment->website; ?>"><?= $this->Comment->website; ?></a></div>
 			<?php endif; ?>
 		 	<div class="comment"><?= $this->Comment->comment; ?></div>
 		</div>

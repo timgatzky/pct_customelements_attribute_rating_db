@@ -343,24 +343,6 @@ class Ratings
 			return;
 		}
 	
-		#// create a psydo rating record incase there are non yet
-		#if($objRatings === null)
-		#{
-		#	$tmp = array(0 => array
-		#	(
-		#		'source' => $strSource,
-		#		'pid'	=> $intPid,
-		#		'attr_id' => $intAttribute,
-		#	));
-		#	
-		#	if($objConfigComments !== null)
-		#	{
-		#		$tmp[0]['allowComment'] = true;
-		#	}
-		#	
-		#	$objRatings = json_decode (json_encode ($tmp), FALSE);
-		#}
-		
 		// set ratings_ template
 		$strTemplate = $objAttribute->ratings_template;
 		// override via Template object

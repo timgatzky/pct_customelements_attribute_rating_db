@@ -14,6 +14,23 @@ foreach($this->RatingsModel as $objRating)
 	$arrVotes[ $objRating->rating ] += (isset($arrVotes[ $objRating->rating ]) ? 1 : 1);
 }
 
+// default block
+for($i = 1; $i <= 5; $i++ )
+{
+	$objRating = new StdClass;
+	$objRating->rating = $i;
+	$objRating->total = 0;
+	$objRating->percent = 0;
+	$objRating->percent_formatted = number_format(0,2);
+	$arrClass = array('rating','value_'.$objRating->rating);
+	($i%2 == 0 ? $arrClass[] = 'even' : $arrClass[] = 'odd');
+	($i == 0 ? $arrClass[] = 'first' : '');
+	($i == count($this->RatingsModel) - 1 ? $arrClass[] = 'last' : '');
+	$objRating->class = implode(' ', $arrClass);
+	$arrRatings[ $i ] = $objRating;
+	unset($objRating);
+}
+
 foreach($this->RatingsModel as $i => $objRating)
 {
 	$percent =  ($arrVotes[ $objRating->rating ] / $this->total) * 100;
@@ -27,11 +44,11 @@ foreach($this->RatingsModel as $i => $objRating)
 	($i == 0 ? $arrClass[] = 'first' : '');
 	($i == count($this->RatingsModel) - 1 ? $arrClass[] = 'last' : '');
 	$objRating->class = implode(' ', $arrClass);
-	$arrRatings[ $objRating->rating ] = $objRating;	
+	$arrRatings[ $objRating->rating ] = $objRating;
 }
 
 // sort
-ksort($arrRatings);
+krsort($arrRatings);
 ?>
 
 
@@ -43,19 +60,27 @@ ksort($arrRatings);
 		<p class="empty"><?= $this->empty ?></p>
 	<?php else: ?>
 	
-	<div class="total block"><?= $this->total; ?></div>
-	<div class="average block"><?= $this->average; ?></div>
+	<div class="rating_overview">
+		<div class="total_text block"><?= $this->average; ?> von 5 Sternen</div>
+		<div class="total block"><?= $this->total; ?> Bewertungen</div>
+		
+	</div>
 	
-	<ul class="ratings_amazon block">
+	<div class="ratings_amzn block">
 	<?php foreach($arrRatings as $objRating): ?>	
-	<li class="<?= $objRating->class; ?>">
-		<ul>
-			<li class="rating value"><?= $objRating->rating; ?></li>
-			<li class="percentage" style="width: <?= $objRating->percent; ?>%;"></li>
-			<li class="percent value_<?= $objRating->percent; ?>"><?= $objRating->percent_formatted; ?> %</li>
-			<li class="filter"><a href="{{env::request}}?<?= 'rating_'.$this->id.'='.$objRating->rating; ?>"><?= $objRating->total; ?></a></li>
-		</ul>
-	</li>
+	<div class="<?= $objRating->class; ?> block">
+
+		<div class="value_<?= $objRating->rating; ?>">
+			<a href="{{env::request}}?<?= 'rating_'.$this->id.'='.$objRating->rating; ?>"><?= $objRating->rating; ?> Sterne</a>
+			<span class="rating_count">(Anzahl: <?= $objRating->total; ?>)</span>
+		</div>
+		
+		<div class="percentage value_<?= $objRating->percent; ?>">
+			<span class="percent_bar" style="width: <?= $objRating->percent; ?>%;"></span>
+		</div>
+		<div class="percent_formatted"><?= $objRating->percent_formatted; ?> %</div>
+
+	</div>
 	<?php endforeach; ?>
 	</ul>
 	<?php endif; ?>

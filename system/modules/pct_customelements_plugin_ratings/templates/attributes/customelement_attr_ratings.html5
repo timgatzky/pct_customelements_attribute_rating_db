@@ -28,7 +28,7 @@ jQuery(document).ready(function()
 	jQuery('#<?php echo $this->selector; ?>').rateit(
 	{
 		min: <?php echo $this->min_value; ?>,
-		max: <?php echo $this->max_value; ?>,
+		max: <?php echo $this->max_value + 1; ?>,
 		step: <?php echo $steps; ?>,
 	});
 
@@ -39,12 +39,12 @@ jQuery(document).ready(function()
 		var elem = jQuery(this);
 		
 		<?php if ($this->allowComment): ?>
-		jQuery('#<?php echo $this->formId; ?> input[name="value"]').val(elem.rateit('value'));
+		jQuery('#<?php echo $this->formId; ?> input[name="value"]').val(elem.rateit('value') - 1);
 		<?php else: ?>
 		jQuery.ajax(
 		{
 		   url: document.location,
-		   data: {attr_id:elem.data('attr_id'), value:elem.rateit('value'), rateit:1, item_id:<?php echo $this->activeRecord->id; ?>},
+		   data: {attr_id:elem.data('attr_id'), value:elem.rateit('value') - 1, rateit:1, item_id:<?php echo $this->activeRecord->id; ?>},
 		   type: 'GET',
 			success: function(data)
 			{
@@ -73,15 +73,12 @@ jQuery(document).ready(function()
 
 <div class="widget rateit_container">
 	
-	<div class="total"><?= $this->total; ?></div>
-	<div class="average"><?= number_format($this->average,1); ?></div>
-	
 	<div class="rating-big"><?= number_format($this->average,1); ?>/<?php echo $this->max_value; ?></div>
 	<div id="<?php echo $this->selector; ?>" class="rateit"
 		data-attr_id="<?= $this->id; ?>"
-		data-rateit-value="<?= $this->average; ?>"
+		data-rateit-value="<?= $this->min_value; ?>"
 		data-rateit-min="<?= $this->min_value; ?>"
-		data-rateit-max="<?= $this->max_value; ?>"
+		data-rateit-max="<?= $this->max_value + 1; ?>"
 		data-rateit-step="<?= $steps; ?>"
 		<?php if(!$this->votingIsAllowed || $this->ratingLimitExceeded || !$this->allowVoting): ?>
 		data-rateit-readonly="true"
@@ -95,9 +92,9 @@ jQuery(document).ready(function()
 	<?php include $this->getTemplate('form_comment_ratings', 'html5'); ?>
 	</div>
 	<?php endif; ?>
-	
-	<div class="ratings_wrapper">
+    
+    <div class="ratings_wrapper">
 	<?= $this->ratings; ?>
 	</div>
-    
+	
 </div>

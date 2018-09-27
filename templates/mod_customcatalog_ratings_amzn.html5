@@ -61,9 +61,8 @@ krsort($arrRatings);
 	<?php else: ?>
 	
 	<div class="rating_overview">
-		<div class="total_text block"><?= $this->average; ?> von 5 Sternen</div>
+		<div class="total_text block"><?= number_format($this->average,1); ?> von 5 Sternen</div>
 		<div class="total block"><?= $this->total; ?> Bewertungen</div>
-		
 	</div>
 	
 	<div class="ratings_amzn block">
@@ -71,7 +70,7 @@ krsort($arrRatings);
 	<div class="<?= $objRating->class; ?> block">
 
 		<div class="value_<?= $objRating->rating; ?>">
-			<a href="{{env::request}}?<?= 'rating_'.$this->id.'='.$objRating->rating; ?>"><?= $objRating->rating; ?> Sterne</a>
+			<span class="rating_value"><?= $objRating->rating; ?> Sterne</span>
 			<span class="rating_count">(Anzahl: <?= $objRating->total; ?>)</span>
 		</div>
 		

@@ -53,15 +53,15 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		'sorting' => array
 		(
 			'mode'                    => 2,
-			'fields'                  => array('tstamp DESC','source','rating'),
+			'fields'                  => array('tstamp DESC','source','rating','helpful','not_helpful'),
 			'icon'                    => PCT_CUSTOMELEMENTS_RATINGS_PATH.'/assets/img/icon.png',
 			'flag'                    => 8,
 			'panelLayout'             => 'filter;sort,search,limit'
 		),
 		'label' => array
 		(
-			'fields'                  => array('source','rating'),
-			'format'                  => '%s',
+			'fields'                  => array('source','pid','rating','helpful','not_helpful'),
+			'format'                  => '%s.id=%s | Sterne: <b>%s</b> | Hilfreich: <b>%s</b> | Nicht hilfreich: <b>%s</b>',
 		),
 		'global_operations' => array
 		(
@@ -121,6 +121,7 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		),
 		'pid' => array
 		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['pid'],
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 		),
 		'tstamp' => array
@@ -184,7 +185,8 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['helpful'],
 			'exclude'                 => true,
-			'filter'                  => true,
+			#'filter'                  => true,
+			'sorting'				  => true,
 			'inputType'               => 'input',
 			'eval'					  => array('readonly'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
@@ -193,10 +195,16 @@ $GLOBALS['TL_DCA']['tl_pct_customelement_ratings'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_pct_customelement_ratings']['not_helpful'],
 			'exclude'                 => true,
-			'filter'                  => true,
+			#'filter'                  => true,
+			'sorting'				  => true,
 			'inputType'               => 'input',
 			'eval'					  => array('readonly'=>true),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 	)
 );
+
+if($GLOBALS['TL_LANGUAGE'] != 'de')
+{
+	$GLOBALS['TL_DCA']['tl_pct_customelement_ratings']['list']['label']['format'] = '%s.id=%s | Stars: <b>%s</b> | Helpful: <b>%s</b> | Not helpful: <b>%s</b>';	
+}

@@ -12,7 +12,7 @@
           <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
           <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
           <input type="hidden" name='PCT_CUSTOMELEMENTS_PLUGIN_RATINGS' value="1">
-          <input type="hidden" name='value' value="<?= $this->average; ?>">
+          <input type="hidden" name='value' value="<?= $this->min_value; ?>">
           <input type="hidden" name='attr_id' value="<?= $this->attr_id; ?>">
           <input type="hidden" name='source' value="<?= $this->source; ?>">
           <input type="hidden" name='pid' value="<?= $this->pid; ?>">

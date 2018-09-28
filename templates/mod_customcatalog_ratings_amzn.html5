@@ -81,7 +81,7 @@ krsort($arrRatings);
 
 	</div>
 	<?php endforeach; ?>
-	</ul>
+	</div>
 	<?php endif; ?>
 	
 <?php $this->endblock(); ?>

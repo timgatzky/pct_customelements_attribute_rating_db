@@ -1,0 +1,59 @@
+{
+	"name":"premium-contao-themes/pct_customelements_plugin_ratings",
+	"description":"Advanced ratings plugin for Premium Contao Themes CustomCatalog module https://www.premium-contao-themes.com/",
+	"keywords":["contao","customcatalog","catalog","customelements","themes","premiumcontaothemes","premium-contao-themes"],
+	"type":"contao-module",
+    "homepage":"https://github.com/timgatzky/pct_customelements_plugin_ratings",
+	"license": "LGPL-3.0+",
+	"authors":
+	[
+		{
+			"name":"Tim Gatzky",
+			"homepage":"http://www.tim-gatzky.de",
+			"role":"Interaction-Designer,Developer"
+		},
+		{
+			"name":"Thomas Löschnigg alias Premium Contao Themes",
+			"homepage":"http://www.premium-contao-themes.com",
+			"role":"Graphic-Designer,Developer"
+		}
+	],
+	"support":
+	{
+		"issues":"https://github.com/timgatzky/pct_customelements_plugin_ratings/issues",
+		"source":"https://github.com/timgatzky/pct_customelements_plugin_ratings",
+		"forum":"https://forum.premium-contao-themes.com"
+		"example":"http://cc.ratings.premium-contao-themes.com"
+	},
+	"require":
+	{
+		"php":">=5.6",
+        "contao/core-bundle":"^3.5 || ~4.4",
+        "contao-community-alliance/composer-plugin":"~2.4 || ~3.0"
+	},
+	"require-dev": 
+	{
+		"contao/manager-plugin": "^2.0"
+	},
+	"replace":
+	{
+		"contao-legacy/pct_customelements_plugin_ratings":"self.version"
+	},	
+	"autoload": 
+	{
+        "psr-0": 
+        {
+            "PCT\\CustomElements\\": "PCT/"
+        }
+    },
+	"extra":
+	{
+		"contao": 
+		{
+            "sources": 
+            {
+                "system/modules/pct_customelements_plugin_ratings": "system/modules/pct_customelements_plugin_ratings"
+            }
+        }
+	}
+}

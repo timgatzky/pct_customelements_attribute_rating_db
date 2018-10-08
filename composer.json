@@ -22,7 +22,7 @@
 	{
 		"issues":"https://github.com/timgatzky/pct_customelements_plugin_ratings/issues",
 		"source":"https://github.com/timgatzky/pct_customelements_plugin_ratings",
-		"forum":"https://forum.premium-contao-themes.com"
+		"forum":"https://forum.premium-contao-themes.com",
 		"example":"http://cc.ratings.premium-contao-themes.com"
 	},
 	"require":

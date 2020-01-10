@@ -103,7 +103,7 @@ class Ratings
 		// add new rating via ajax
 		if( \Contao\Input::get('attr_id') == $objAttribute->get('id') && (boolean)\Contao\Environment::get('isAjaxRequest') === true)
 		{
-			$intRating = $this->addNewRating(\Input::get('value'),$strTable,$intPid,$intAttribute,($objAttribute->get('ratings_moderate') ? '' : 1));
+			$intRating = $this->addNewRating(\Contao\Input::get('value'),$strTable,$intPid,$intAttribute,($objAttribute->get('ratings_moderate') ? '' : 1));
 		}
 		
 		// send notification

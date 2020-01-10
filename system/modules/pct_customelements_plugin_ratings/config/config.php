@@ -17,7 +17,7 @@
  * Constants
  */
 define('PCT_CUSTOMELEMENTS_RATINGS_PATH', 'system/modules/pct_customelements_plugin_ratings');
-define('PCT_CUSTOMELEMENTS_RATINGS_VERSION', '1.0.0');
+define('PCT_CUSTOMELEMENTS_RATINGS_VERSION', '1.0.1');
 
 $blnInstallTool = true;
 if(strlen(strpos(\Environment::getInstance()->scriptName, '/contao/install.php')) > 0 || strlen(strpos(\Environment::getInstance()->requestUri, '/contao/install')) > 0)

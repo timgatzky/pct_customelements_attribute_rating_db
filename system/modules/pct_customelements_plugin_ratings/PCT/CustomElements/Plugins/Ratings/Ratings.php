@@ -22,6 +22,7 @@ namespace PCT\CustomElements\Plugins;
  * Imports
  */
 use PCT\CustomElements\Models\RatingsModel;
+use Contao\Controller;
 
 
 /**
@@ -134,6 +135,12 @@ class Ratings
 			}
 			
 			$objEmail->sendTo(array_unique($arrNotifies));
+		}
+
+		// reload the page inside the ajax request when a new rating has been placed
+		if( $intRating > 0 && (boolean)\Contao\Environment::get('isAjaxRequest') === true )
+		{
+			Controller::reload();
 		}
 		
 		// add ratings to template

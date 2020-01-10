@@ -22,7 +22,6 @@ namespace PCT\CustomElements\Plugins;
  * Imports
  */
 use PCT\CustomElements\Models\RatingsModel;
-use Contao\Controller;
 
 
 /**
@@ -62,7 +61,7 @@ class Ratings
 		}
 		
 		// create Comments config
-		if($objAttribute->get('allowComments') && in_array('comments', \ModuleLoader::getActive()))
+		if($objAttribute->get('allowComments') && in_array('comments', \Contao\ModuleLoader::getActive()))
 		{
 		   // Adjust the comments headline level
 		   $objTemplate->hlc = 'h4';
@@ -86,7 +85,7 @@ class Ratings
 		   // Notify a different person
 		   if(strlen($objAttribute->get('com_notify')) > 0 && $objAttribute->get('com_notify') != 'notify_admin')
 		   {
-		   	$arrNotifies = array($objAttribute->get('com_notify'));
+		   		$arrNotifies = array($objAttribute->get('com_notify'));
 		   }
 		
 		   $objConfig = new \StdClass();
@@ -102,7 +101,7 @@ class Ratings
 		}
 		
 		// add new rating via ajax
-		if( \Input::get('attr_id') == $objAttribute->get('id') && (boolean)\Environment::get('isAjaxRequest') === true)
+		if( \Contao\Input::get('attr_id') == $objAttribute->get('id') && (boolean)\Contao\Environment::get('isAjaxRequest') === true)
 		{
 			$intRating = $this->addNewRating(\Input::get('value'),$strTable,$intPid,$intAttribute,($objAttribute->get('ratings_moderate') ? '' : 1));
 		}
@@ -116,7 +115,7 @@ class Ratings
 			$objEmail = new \Email();
 			$objEmail->from = $GLOBALS['TL_ADMIN_EMAIL'];
 			$objEmail->fromName = $GLOBALS['TL_ADMIN_NAME'];
-			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Idna::decode(\Environment::get('host')));
+			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Contao\Idna::decode(\Environment::get('host')));
 			$objEmail->text = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_message'],'', $objRating->rating, $objRating->source, $objRating->pid);
 									  
 			// Notifies
@@ -140,7 +139,7 @@ class Ratings
 		// reload the page inside the ajax request when a new rating has been placed
 		if( $intRating > 0 && (boolean)\Contao\Environment::get('isAjaxRequest') === true )
 		{
-			Controller::reload();
+			\Contao\Controller::reload();
 		}
 		
 		// add ratings to template
@@ -166,7 +165,7 @@ class Ratings
 		}
 		
 		// @var object Comments
-		$objComments = new \Comments();
+		$objComments = new \Contao\Comments();
 		
 		$arrReturn = array();
 		
@@ -181,15 +180,15 @@ class Ratings
 			// @var object
 			$objAttribute = \PCT\CustomElements\Plugins\CustomCatalog\Core\AttributeFactory::findById( $objRating->attr_id );
 			
-			$objTemplate = new \FrontendTemplate( $strTemplate );
+			$objTemplate = new \Contao\FrontendTemplate( $strTemplate );
 			$objTemplate->Rating = $objRating;
 			$objTemplate->rating = $objRating->rating;
 			$objTemplate->attr_id = $objRating->attr_id;
 			$objTemplate->source = $objRating->source;
 			$objTemplate->pid = $objRating->pid;
 			$objTemplate->tstamp = $objRating->tstamp;
-			$objTemplate->datetime = \System::parseDate( \Config::get('datimFormat'), $objRating->tstamp );
-			$objTemplate->date = \System::parseDate( \Config::get('dateFormat'), $objRating->tstamp );
+			$objTemplate->datetime = \Contao\System::parseDate( \Contao\Config::get('datimFormat'), $objRating->tstamp );
+			$objTemplate->date = \Contao\System::parseDate( \Contao\Config::get('dateFormat'), $objRating->tstamp );
 			$objTemplate->num_rating = $i;
 			$objTemplate->ratingLimitExceeded = false;
 			$objTemplate->isPersonal = false;
@@ -225,7 +224,7 @@ class Ratings
 			// author information
 			if($objRating->member > 0)
 			{
-				$objMember = \MemberModel::findByPk( $objRating->member );
+				$objMember = \Contao\MemberModel::findByPk( $objRating->member );
 				$objTemplate->MemberModel = $objMember;
 				$objTemplate->author = $objMember->firstname.' '.$objMember->lastname;
 			}
@@ -243,14 +242,14 @@ class Ratings
 				#$objComments->addCommentsToTemplate($objTemplate,$objConfigComments,$source,$objRating->pid,$objConfigComments->notifies);
 				
 				// @var object
-				$objComment = \CommentsModel::findByPk($objRating->comment);
+				$objComment = \Contao\CommentsModel::findByPk($objRating->comment);
 				$objTemplate->Comment = $objComment;
 			}
 			
 			// member access
 			if($objRating->member > 0 && FE_USER_LOGGED_IN === true)
 			{
-				$objMember = \FrontendUser::getInstance();
+				$objMember = \Contao\FrontendUser::getInstance();
 				if(!$objMember->id)
 				{
 					$objMember->authenticate();
@@ -278,10 +277,10 @@ class Ratings
 			$objTemplate->not_helpful_label = $GLOBALS['TL_LANG']['MSC']['ratings_not_helpful_label'];
 			$objTemplate->delete_label = $GLOBALS['TL_LANG']['MSC']['ratings_delete_label'];
 			// voting form submitted
-			if( \Input::post('FORM_SUBMIT') == $formID )
+			if( \Contao\Input::post('FORM_SUBMIT') == $formID )
 			{
 				// voted helpful
-				if( \Input::post('helpful') != '' )
+				if( \Contao\Input::post('helpful') != '' )
 				{
 					$objRating->__set('helpful',$objRating->helpful + 1);
 					// update the record
@@ -295,12 +294,12 @@ class Ratings
 					$objRating->save();
 				}
 				// delete record
-				else if( \Input::post('delete') != '' )
+				else if( \Contao\Input::post('delete') != '' )
 				{
 					// delete related comments
 					if($objRating->comment)
 					{
-						$objComment = \CommentsModel::findByPk($objRating->comment);
+						$objComment = \Contao\CommentsModel::findByPk($objRating->comment);
 						if($objComment !== null)
 						{
 							$objComment->delete();
@@ -314,7 +313,7 @@ class Ratings
 				// reload page to flush post
 				if((boolean)$GLOBALS['PCT_CUSTOMCATALOG_RATINGS']['reloadAfterSubmit'] === true)
 				{
-					\Controller::reload();
+					\Contao\Controller::reload();
 				}
 			}
 			
@@ -373,7 +372,7 @@ class Ratings
 		// count number of ratings for the current member
 		if(FE_USER_LOGGED_IN === true)
 		{
-			$objMember = \FrontendUser::getInstance();
+			$objMember = \Contao\FrontendUser::getInstance();
 			if(!$objMember->id)
 			{
 				$objMember->authenticate();
@@ -418,7 +417,7 @@ class Ratings
 		// asign to user
 		if(FE_USER_LOGGED_IN === true)
 		{
-			$objMember = \FrontendUser::getInstance();
+			$objMember = \Contao\FrontendUser::getInstance();
 			if(!$objMember->id)
 			{
 				$objMember->authenticate();
@@ -427,7 +426,7 @@ class Ratings
 		}
 		
 		// determine counter
-		$objCounter = \Database::getInstance()->prepare("SELECT * FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? ORDER BY counter DESC")->limit(1)->execute($strSource,$intPid,$intAttribute);
+		$objCounter = \Contao\Database::getInstance()->prepare("SELECT * FROM tl_pct_customelement_ratings WHERE source=? AND pid=? AND attr_id=? ORDER BY counter DESC")->limit(1)->execute($strSource,$intPid,$intAttribute);
 		$arrSet['counter'] = $objCounter->counter + 1;
 		
 		// @var object
@@ -456,7 +455,7 @@ class Ratings
 	 */
 	public function addCommentCallback($intComment, $arrSet, $objComment)
 	{
-		if( \Input::post('PCT_CUSTOMELEMENTS_PLUGIN_RATINGS') == '' )
+		if( \Contao\Input::post('PCT_CUSTOMELEMENTS_PLUGIN_RATINGS') == '' )
 		{
 			return;
 		}
@@ -470,7 +469,7 @@ class Ratings
 		}
 		
 		// add new rating
-		$intRating = $this->addNewRating(\Input::post('value'),\Input::post('source'),\Input::post('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1), $intComment);
+		$intRating = $this->addNewRating(\Contao\Input::post('value'),\Contao\Input::post('source'),\Contao\Input::post('pid'),$objAttribute->get('id'),($objAttribute->get('ratings_moderate') ? '' : 1), $intComment);
 		
 		// send notification
 		if($intRating > 0 && $objAttribute->get('ratings_notify') != '')
@@ -478,10 +477,10 @@ class Ratings
 			$objRating = \PCT\CustomElements\Models\RatingsModel::findByPk($intRating);
 			
 			// Prepare the notification mail
-			$objEmail = new \Email();
+			$objEmail = new \Contao\Email();
 			$objEmail->from = $GLOBALS['TL_ADMIN_EMAIL'];
 			$objEmail->fromName = $GLOBALS['TL_ADMIN_NAME'];
-			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Idna::decode(\Environment::get('host')));
+			$objEmail->subject = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_subject'], \Contao\Idna::decode(\Environment::get('host')));
 			$objEmail->text = sprintf($GLOBALS['TL_LANG']['MSC']['ratings_message'],$arrSet['name'], $objRating->rating, $objRating->source, $objRating->pid);
 									  
 			// Notifies

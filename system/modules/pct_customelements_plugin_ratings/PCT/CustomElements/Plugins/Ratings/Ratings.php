@@ -433,8 +433,7 @@ class Ratings
 		{
 			foreach ($GLOBALS['CUSTOMELEMENTS_HOOKS']['addRating'] as $callback)
 			{
-				$this->import($callback[0]);
-				$this->{$callback[0]}->{$callback[1]}($objModel->id, $arrSet, $this);
+				\Contao\System::importStatic($callback[0])->{$callback[1]}($objModel->id, $arrSet, $this);
 			}
 		}
 		

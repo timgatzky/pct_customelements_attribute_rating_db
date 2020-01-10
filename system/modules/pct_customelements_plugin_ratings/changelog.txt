@@ -1,4 +1,5 @@
 ### 1.0.1
 Fixed: New ratings has been placed more than once (#5)
+Update: Use \Contao\ namespaces for contao classes
 
 ### 1.0.0

@@ -139,7 +139,8 @@ class Ratings
 		// reload the page inside the ajax request when a new rating has been placed
 		if( $intRating > 0 && (boolean)\Contao\Environment::get('isAjaxRequest') === true )
 		{
-			\Contao\Controller::reload();
+			\Contao\Input::setGet('attr_id',null);
+			#\Contao\Controller::reload();
 		}
 		
 		// add ratings to template

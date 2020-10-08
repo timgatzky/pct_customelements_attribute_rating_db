@@ -501,5 +501,8 @@ class Ratings
 			
 			$objEmail->sendTo(array_unique($arrNotifies));
 		}
+
+		// flush post
+		\Contao\Controller::reload();
 	}
 }

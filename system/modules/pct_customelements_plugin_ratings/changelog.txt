@@ -1,3 +1,6 @@
+### 1.0.2
+Fixed: Duplicate ratings in combination with comments (#7)
+
 ### 1.0.1
 Fixed: New ratings has been placed more than once (#5)
 Update: Use \Contao\ namespaces for contao classes
